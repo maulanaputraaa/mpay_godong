@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/nav_bar.dart';
 import 'package:mpay_godong/login/login_screen.dart';
 import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
+import '../qr_scanner/qr_scan_page.dart';
 
 class AppScreen extends StatefulWidget {
   static const String routeName = '/test';
@@ -39,15 +39,17 @@ class _AppScreenState extends State<AppScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            heart = !heart;
-          });
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => QRScanPage()),
+          );
         },
         shape: const CircleBorder(),
         backgroundColor: Colors.white,
         child: Icon(
-          heart ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-          color: Colors.red,
+          Icons.qr_code_scanner,
+          color: Colors.green,
+          size: 34,
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
