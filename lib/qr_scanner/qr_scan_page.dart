@@ -6,7 +6,7 @@ class QRScanPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan QR Code'),
+        title: const Text('Scan QR Code'),
       ),
       body: MobileScanner(
         onDetect: (BarcodeCapture barcodeCapture) {
