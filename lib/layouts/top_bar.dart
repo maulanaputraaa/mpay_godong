@@ -18,6 +18,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       leading: leading,
       actions: action != null ? [action!] : null,
+      backgroundColor: Colors.white,
     );
   }
 
