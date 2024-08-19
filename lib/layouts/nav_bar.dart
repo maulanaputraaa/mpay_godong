@@ -29,48 +29,25 @@ class _NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return StylishBottomBar(
-      option: DotBarOptions(
-        dotStyle: DotStyle.circle,
+      option: AnimatedBarOptions(
+        iconStyle: IconStyle.animated,
       ),
       items: [
         BottomBarItem(
-          icon: const Icon(
-            Icons.house_outlined,
-          ),
-          selectedIcon: const Icon(Icons.house_rounded),
-          selectedColor: Colors.teal,
-          unSelectedColor: Colors.grey,
-          title: const Text('Home'),
-          badge: const Text('9+'),
-          showBadge: true,
-          badgeColor: Colors.purple,
-          badgePadding: const EdgeInsets.only(left: 4, right: 4),
+          icon: const Icon(Icons.savings_rounded),
+          title: const Text('Simpanan'),
         ),
         BottomBarItem(
-          icon: const Icon(Icons.star_border_rounded),
-          selectedIcon: const Icon(Icons.star_rounded),
-          selectedColor: Colors.red,
-          title: const Text('Star'),
+          icon: const Icon(Icons.credit_card_rounded),
+          title: const Text('Angsuran'),
         ),
         BottomBarItem(
-          icon: const Icon(
-            Icons.style_outlined,
-          ),
-          selectedIcon: const Icon(
-            Icons.style,
-          ),
-          selectedColor: Colors.deepOrangeAccent,
-          title: const Text('Style'),
+          icon: const Icon(Icons.receipt_long_rounded),
+          title: const Text('Laporan'),
         ),
         BottomBarItem(
-          icon: const Icon(
-            Icons.person_outline,
-          ),
-          selectedIcon: const Icon(
-            Icons.person,
-          ),
-          selectedColor: Colors.deepPurple,
-          title: const Text('Profile'),
+          icon: const Icon(Icons.settings_rounded),
+          title: const Text('Pengaturan'),
         ),
       ],
       hasNotch: true,
