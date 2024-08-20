@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/nav_bar.dart';
 import 'package:mpay_godong/login/login_screen.dart';
-import 'package:mpay_godong/qr_scanner/qr_scan_page.dart';
+import 'package:mpay_godong/qr_scan/qr_scan_screen.dart';
 
 class AppScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -43,7 +43,7 @@ class _AppScreenState extends State<AppScreen> {
         onPressed: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => QRScanPage()),
+            MaterialPageRoute(builder: (context) => const QRScanScreen()),
           );
         },
         shape: const CircleBorder(),
@@ -80,7 +80,7 @@ class _AppScreenState extends State<AppScreen> {
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return LoginScreen();
+        return const LoginScreen();
       case 1:
         return const Center(child: Text('Star'));
       case 2:
