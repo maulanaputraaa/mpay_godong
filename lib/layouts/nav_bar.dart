@@ -56,7 +56,11 @@ class _NavBarState extends State<NavBar> {
       notchStyle: NotchStyle.circle,
       onTap: (index) {
         if (index == selected) return;
-        widget.controller.jumpToPage(index);
+        widget.controller.animateToPage(
+          index,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
         setState(() {
           selected = index;
         });
