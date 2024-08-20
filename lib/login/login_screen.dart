@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/layouts/top_bar.dart';
 import 'components/body.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -9,8 +10,9 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: const Body(),
+      appBar: const TopBar(title: Text(''),
+      ),
+      body: Body(),
     );
   }
 }
