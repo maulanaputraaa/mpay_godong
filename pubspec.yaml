@@ -38,6 +38,7 @@ dependencies:
   stylish_bottom_bar: ^1.1.0
   mobile_scanner: ^5.1.1
   fluttertoast: ^8.2.8
+  local_auth: ^2.3.0
 
 dev_dependencies:
   flutter_test:
