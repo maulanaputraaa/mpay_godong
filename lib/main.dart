@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/app.dart';
+import 'package:mpay_godong/login/login_screen.dart';
+import 'package:mpay_godong/routes.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +19,8 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      home: const AppScreen(),
+      home: LoginScreen(),
+      routes: routes,
     );
   }
 }
