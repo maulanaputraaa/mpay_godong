@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/nav_bar.dart';
 import 'package:mpay_godong/login/login_screen.dart';
-import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
-import '../qr_scanner/qr_scan_page.dart';
+import 'package:mpay_godong/qr_scanner/qr_scan_page.dart';
 
 class AppScreen extends StatefulWidget {
-  static const String routeName = '/test';
-
+  static const String routeName = '/home';
   const AppScreen({super.key});
 
   @override
@@ -15,7 +13,6 @@ class AppScreen extends StatefulWidget {
 
 class _AppScreenState extends State<AppScreen> {
   int selected = 0;
-  bool heart = false;
   final controller = PageController();
 
   @override
@@ -34,6 +31,11 @@ class _AppScreenState extends State<AppScreen> {
           setState(() {
             selected = index;
           });
+          controller.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
         },
         controller: controller,
       ),
@@ -46,7 +48,7 @@ class _AppScreenState extends State<AppScreen> {
         },
         shape: const CircleBorder(),
         backgroundColor: Colors.white,
-        child: Icon(
+        child: const Icon(
           Icons.qr_code_scanner,
           color: Colors.green,
           size: 34,
@@ -56,14 +58,37 @@ class _AppScreenState extends State<AppScreen> {
       body: SafeArea(
         child: PageView(
           controller: controller,
-          children: const [
-            Center(child: Text('Simpanan')),
-            Center(child: Text('Angsuran')),
-            Center(child: Text('Laporan')),
-            Center(child: Text('Profile')),
+          onPageChanged: (index) {
+            setState(() {
+              selected = index;
+            });
+          },
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              child: KeyedSubtree(
+                key: ValueKey<int>(selected),
+                child: _getPage(selected),
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Widget _getPage(int index) {
+    switch (index) {
+      case 0:
+        return LoginScreen();
+      case 1:
+        return const Center(child: Text('Star'));
+      case 2:
+        return const Center(child: Text('Style'));
+      case 3:
+        return const Center(child: Text('Profile'));
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
