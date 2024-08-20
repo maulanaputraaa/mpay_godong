@@ -3,8 +3,10 @@ import 'login_form.dart';
 import 'login_fingerprint.dart';
 
 class Body extends StatefulWidget {
+  const Body({super.key});
+
   @override
-  _BodyState createState() => _BodyState();
+  State<Body> createState() => _BodyState();
 }
 
 class _BodyState extends State<Body> {
@@ -15,8 +17,8 @@ class _BodyState extends State<Body> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          LoginForm(),
-          SizedBox(height: 20),
+          const LoginForm(),
+          const SizedBox(height: 20),
           LoginFingerprint(),
         ],
       ),

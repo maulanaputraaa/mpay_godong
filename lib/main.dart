@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/login/login_screen.dart';
 import 'package:mpay_godong/routes.dart';
 

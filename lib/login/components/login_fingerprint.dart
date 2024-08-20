@@ -6,6 +6,8 @@ import '../../layouts/app.dart';
 class LoginFingerprint extends StatelessWidget {
   final LocalAuthentication auth = LocalAuthentication();
 
+  LoginFingerprint({super.key});
+
   Future<void> _authenticate(BuildContext context) async {
     bool isBiometricSupported = await auth.isDeviceSupported();
     bool canCheckBiometrics = await auth.canCheckBiometrics;
@@ -20,17 +22,13 @@ class LoginFingerprint extends StatelessWidget {
     }
 
     bool authenticated = false;
-    try {
-      authenticated = await auth.authenticate(
-        localizedReason: 'Scan your fingerprint to log in',
-        options: const AuthenticationOptions(
-          useErrorDialogs: true,
-          stickyAuth: true,
-        ),
-      );
-    } catch (e) {
-      print(e);
-    }
+    authenticated = await auth.authenticate(
+      localizedReason: 'Scan your fingerprint to log in',
+      options: const AuthenticationOptions(
+        useErrorDialogs: true,
+        stickyAuth: true,
+      ),
+    );
 
     if (authenticated) {
       Fluttertoast.showToast(
