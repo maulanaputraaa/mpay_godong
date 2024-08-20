@@ -57,9 +57,9 @@ class _AppScreenState extends State<AppScreen> {
         child: PageView(
           controller: controller,
           children: const [
-            LoginScreen(),
-            Center(child: Text('Star')),
-            Center(child: Text('Style')),
+            Center(child: Text('Simpanan')),
+            Center(child: Text('Angsuran')),
+            Center(child: Text('Laporan')),
             Center(child: Text('Profile')),
           ],
         ),
