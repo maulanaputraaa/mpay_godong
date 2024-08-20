@@ -7,27 +7,27 @@ class QRScanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TopBar(title: Text("Qr Scanner")),
+      appBar: const TopBar(title: Text("Qr Scanner")),
       body: MobileScanner(
         onDetect: (BarcodeCapture barcodeCapture) {
           final List<Barcode> barcodes = barcodeCapture.barcodes;
           for (final barcode in barcodes) {
             if (barcode.rawValue == null) {
               Fluttertoast.showToast(
-                msg: 'Failed to scan Barcode',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                textColor: Colors.white,
-                backgroundColor: Colors.red
+                  msg: 'Failed to scan Barcode',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.white,
+                  backgroundColor: Colors.red
               );
             } else {
               final String code = barcode.rawValue!;
               Fluttertoast.showToast(
-                msg: 'Barcode found! $code',
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.CENTER,
-                textColor: Colors.white,
-                backgroundColor: Colors.green
+                  msg: 'Barcode found! $code',
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  textColor: Colors.white,
+                  backgroundColor: Colors.green
               );
               // Tambahkan logika untuk menangani hasil scan di sini
             }
