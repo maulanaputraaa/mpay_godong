@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/app.dart';
+import 'package:mpay_godong/models/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -13,13 +15,27 @@ class _LoginFormState extends State<LoginForm> {
   final _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  final String _dummyEmail = 'test@123.com';
-  final String _dummyPassword = '123';
+  late SharedPreferences _prefs;
+  late User _user;
+
+  @override
+  void initState() {
+    super.initState();
+    SharedPreferences.getInstance().then((prefs) {
+      _prefs = prefs;
+      _user = User(
+        email: _prefs.getString('email') ?? '',
+        password: _prefs.getString('password') ?? '',
+      );
+      _emailController.text = _user.email;
+      _passwordController.text = _user.password;
+    });
+  }
 
   void _login() {
     if (_formKey.currentState?.validate() ?? false) {
-      if (_emailController.text == _dummyEmail &&
-          _passwordController.text == _dummyPassword) {
+      if (_emailController.text == _user.email &&
+          _passwordController.text == _user.password) {
         Navigator.pushReplacementNamed(context, AppScreen.routeName);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -36,7 +52,8 @@ class _LoginFormState extends State<LoginForm> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400), // Maximum width for larger screens
+            constraints: const BoxConstraints(
+                maxWidth: 400), // Maximum width for larger screens
             child: Form(
               key: _formKey,
               child: Column(
@@ -45,9 +62,9 @@ class _LoginFormState extends State<LoginForm> {
                   Text(
                     'Welcome Back!',
                     style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blueAccent,
+                        ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
