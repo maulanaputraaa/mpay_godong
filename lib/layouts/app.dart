@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mpay_godong/layouts/nav_bar.dart';
 import 'package:mpay_godong/login/login_screen.dart';
 import 'package:mpay_godong/qr_scan/qr_scan_screen.dart';
+import 'package:mpay_godong/simpanan/simpanan_screen.dart';
+import 'package:stylish_bottom_bar/stylish_bottom_bar.dart';
+import '../qr_scan/qr_scan_screen.dart';
 
 class AppScreen extends StatefulWidget {
   static const String routeName = '/home';
@@ -80,7 +83,7 @@ class _AppScreenState extends State<AppScreen> {
   Widget _getPage(int index) {
     switch (index) {
       case 0:
-        return const LoginScreen();
+        return SimpananScreen();
       case 1:
         return const Center(child: Text('Star'));
       case 2:
