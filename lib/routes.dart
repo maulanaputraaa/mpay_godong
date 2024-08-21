@@ -8,5 +8,5 @@ final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => const SplashScreen(),
   LoginScreen.routeName: (context) => const LoginScreen(),
   AppScreen.routeName: (context) => const AppScreen(),
-  SimpananScreen.routeName: (context) => SimpananScreen()
+  SimpananScreen.routeName: (context) => const SimpananScreen()
 };

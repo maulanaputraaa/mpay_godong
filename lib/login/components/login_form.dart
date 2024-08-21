@@ -36,7 +36,7 @@ class _LoginFormState extends State<LoginForm> {
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 400), // Maximum width for larger screens
+            constraints: const BoxConstraints(maxWidth: 400), // Maximum width for larger screens
             child: Form(
               key: _formKey,
               child: Column(

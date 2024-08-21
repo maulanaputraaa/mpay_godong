@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class SimpananMenu extends StatelessWidget {
+  const SimpananMenu({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -41,7 +43,7 @@ class SimpananMenu extends StatelessWidget {
                         'Setoran : Rp.0',
                         style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.grey),
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       Text(
                         'Penarikan : Rp.0',
                         style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04, color: Colors.grey),
