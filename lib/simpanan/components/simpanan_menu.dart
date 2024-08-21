@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/simpanan/setoran/setoran_screen.dart';
 
 class SimpananMenu extends StatelessWidget {
   const SimpananMenu({super.key});
@@ -91,43 +92,54 @@ class SimpananMenu extends StatelessWidget {
       children: <Widget>[
         _buildMenuButton(
           context,
-          'SETORAN',
-          Image.asset(
+          label: 'SETORAN',
+          icon: Image.asset(
             'assets/images/setoran.png',
             height: 90,
           ),
-          Colors.white,
+          color: Colors.white,
+          onPressed: () =>
+              Navigator.pushNamed(context, SetoranScreen.routeName),
         ),
         _buildMenuButton(
-            context,
-            'PENARIKAN',
-            Image.asset(
-              'assets/images/penarikan.png',
-              height: 90,
-            ),
-            Colors.white),
+          context,
+          label: 'PENARIKAN',
+          icon: Image.asset(
+            'assets/images/penarikan.png',
+            height: 90,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.pushNamed(context, '/penarikan'),
+        ),
         _buildMenuButton(
-            context,
-            'CEK SALDO',
-            Image.asset(
-              'assets/images/ceksaldo.png',
-              height: 90,
-            ),
-            Colors.white),
+          context,
+          label: 'CEK SALDO',
+          icon: Image.asset(
+            'assets/images/ceksaldo.png',
+            height: 90,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.pushNamed(context, '/ceksaldo'),
+        ),
         _buildMenuButton(
-            context,
-            'REPRINT',
-            Image.asset(
-              'assets/images/printer.png',
-              height: 90,
-            ),
-            Colors.white),
+          context,
+          label: 'REPRINT',
+          icon: Image.asset(
+            'assets/images/printer.png',
+            height: 90,
+          ),
+          color: Colors.white,
+          onPressed: () => Navigator.pushNamed(context, '/reprint'),
+        ),
       ],
     );
   }
 
-  Widget _buildMenuButton(
-      BuildContext context, String label, dynamic icon, Color color) {
+  Widget _buildMenuButton(BuildContext context,
+      {required String label,
+      dynamic icon,
+      required Color color,
+      required Function() onPressed}) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black87,
@@ -138,9 +150,7 @@ class SimpananMenu extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         elevation: 4,
       ),
-      onPressed: () {
-        // Aksi menu
-      },
+      onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
