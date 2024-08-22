@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mpay_godong/simpanan/penarikan/penarikan_screen.dart';
+import 'package:mpay_godong/simpanan/saldo/saldo_screen.dart';
 import 'package:mpay_godong/simpanan/setoran/setoran_screen.dart';
 
 class SimpananMenu extends StatelessWidget {
@@ -121,7 +122,8 @@ class SimpananMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/ceksaldo'),
+          onPressed: () =>
+              Navigator.pushNamed(context, SaldoScreen.routeName),
         ),
         _buildMenuButton(
           context,
