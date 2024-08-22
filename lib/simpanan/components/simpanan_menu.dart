@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/simpanan/penarikan/penarikan_screen.dart';
 import 'package:mpay_godong/simpanan/setoran/setoran_screen.dart';
 
 class SimpananMenu extends StatelessWidget {
@@ -109,7 +110,8 @@ class SimpananMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/penarikan'),
+          onPressed: () =>
+              Navigator.pushNamed(context, PenarikanScreen.routeName),
         ),
         _buildMenuButton(
           context,
