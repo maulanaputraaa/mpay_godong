@@ -54,7 +54,7 @@ class LoginFingerprint extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        const Text('Or log in using fingerprint'),
+        const Text('Atau Masuk Menggunakan Sidik Jari'),
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () => _authenticate(context),
