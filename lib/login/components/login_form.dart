@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,8 +40,14 @@ class _LoginFormState extends State<LoginForm> {
           _passwordController.text == _user.password) {
         Navigator.pushReplacementNamed(context, AppScreen.routeName);
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Invalid email or password')),
+        Fluttertoast.showToast(
+          msg: 'Email atau Password Salah',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     }
@@ -47,30 +55,31 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Center(
           child: ConstrainedBox(
-            constraints: const BoxConstraints(
-                maxWidth: 400), // Maximum width for larger screens
+            constraints: BoxConstraints(
+                maxWidth: screenWidth * 0.9),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: <Widget>[
-                  Text(
-                    'Welcome Back!',
-                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blueAccent,
-                        ),
-                    textAlign: TextAlign.center,
+                  Image.asset(
+                    'assets/images/logo.png',
+                    width: screenWidth * 0.6,
+                    height: screenWidth * 0.6,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 16),
                   Text(
-                    'Please login to your account',
-                    style: Theme.of(context).textTheme.titleMedium,
+                    'Silahkan Masuk ke Akun Anda',
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      fontSize: 18,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
@@ -86,7 +95,7 @@ class _LoginFormState extends State<LoginForm> {
                     keyboardType: TextInputType.emailAddress,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your email';
+                        return 'Silahkan Masukkan Email Anda';
                       }
                       return null;
                     },
@@ -104,7 +113,7 @@ class _LoginFormState extends State<LoginForm> {
                     obscureText: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please enter your password';
+                        return 'Silahkan Masukkan Password Anda';
                       }
                       return null;
                     },
@@ -115,18 +124,49 @@ class _LoginFormState extends State<LoginForm> {
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(30),
                       ),
                     ),
                     child: const Text(
                       'Login',
-                      style: TextStyle(fontSize: 16),
+                      style: TextStyle(fontSize: 20, color: Colors.green),
                     ),
                   ),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SignUpButton extends StatelessWidget {
+  const SignUpButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: RichText(
+        text: TextSpan(
+          text: 'Tidak Punya Akun? ',
+          style: const TextStyle(fontSize: 16, color: Colors.black),
+          children: <TextSpan>[
+            TextSpan(
+              text: 'Sign Up',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.blue,
+                fontWeight: FontWeight.bold,
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  // Navigasi ke halaman pendaftaran (sign up)
+                  Navigator.pushNamed(context, '/sign_up');
+                },
+            ),
+          ],
         ),
       ),
     );
