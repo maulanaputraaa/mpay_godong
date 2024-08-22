@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/angsuran/angsuran_screen.dart';
+import 'package:mpay_godong/laporan/laporan_screen.dart';
 import 'package:mpay_godong/layouts/nav_bar.dart';
+import 'package:mpay_godong/pengaturan/pengaturan_screen.dart';
 import 'package:mpay_godong/qr_scan/qr_scan_screen.dart';
 import 'package:mpay_godong/simpanan/simpanan_screen.dart';
 
@@ -82,11 +85,11 @@ class _AppScreenState extends State<AppScreen> {
       case 0:
         return const SimpananScreen();
       case 1:
-        return const Center(child: Text('Star'));
+        return const AngsuranScreen();
       case 2:
-        return const Center(child: Text('Style'));
+        return const LaporanScreen();
       case 3:
-        return const Center(child: Text('Profile'));
+        return const PengaturanScreen();
       default:
         return const SizedBox.shrink();
     }
