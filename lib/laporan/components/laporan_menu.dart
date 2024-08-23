@@ -92,7 +92,7 @@ class LaporanMenu extends StatelessWidget {
   Widget _buildMenuGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(), // Tambahkan ini untuk menghindari scroll di dalam GridView
       crossAxisCount: 2,
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,

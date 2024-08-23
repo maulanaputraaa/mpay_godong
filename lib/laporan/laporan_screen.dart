@@ -12,7 +12,8 @@ class LaporanScreen extends StatelessWidget {
     return const Scaffold(
         appBar: TopBar(
             title:
-            Text('Laporan')
+            Text('Laporan'),
+            isSettingsPage: true,
         ),
         body: Body()
     );
