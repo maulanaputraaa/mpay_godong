@@ -40,7 +40,7 @@ class _BodyState extends State<SaldoBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -88,6 +88,7 @@ class _BodyState extends State<SaldoBody> {
 
   Widget _buildInputField(String label, {String? initialValue}) {
     return TextField(
+      keyboardType: label == 'Rekening' ? TextInputType.number : TextInputType.text,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(color: Colors.grey[600]),

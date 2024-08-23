@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/angsuran/angsuran/angsuran_feature_screen.dart';
 import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
 
 class AngsuranMenu extends StatelessWidget {
@@ -99,7 +100,7 @@ class AngsuranMenu extends StatelessWidget {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, '/halaman angsuran'),
+              Navigator.pushNamed(context, AngsuranFeatureScreen.routeName),
         ),
         _buildMenuButton(
           context,
