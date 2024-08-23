@@ -95,7 +95,7 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
 
   Widget _buildMenuTitle(BuildContext context) {
     return Text(
-      'Menu Tabungan',
+      'Menu Pengaturan',
       style: TextStyle(
         fontSize: MediaQuery.of(context).size.width * 0.05,
         fontWeight: FontWeight.bold,
