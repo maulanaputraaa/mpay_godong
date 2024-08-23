@@ -22,7 +22,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Mpay Godong',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,

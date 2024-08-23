@@ -22,9 +22,9 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
       // Mendapatkan MAC address menggunakan library mac_address
       String? result = await GetMac.macAddress;
       setState(() {
-        macAddress = result;
+        macAddress = result ?? "Tidak ditemukan";
       });
-        } catch (e) {
+    } catch (e) {
       setState(() {
         macAddress = "Gagal mendapatkan MAC Address";
       });
@@ -33,7 +33,7 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,6 +161,10 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
         dynamic icon,
         required Color color,
         required Function() onPressed}) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonPadding = screenWidth * 0.04;
+    final iconSize = screenWidth * 0.1;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black87,
@@ -168,14 +172,14 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(buttonPadding),
         elevation: 4,
       ),
       onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon is Image ? icon : Icon(icon, size: 40),
+          icon is Image ? icon : Icon(icon, size: iconSize),
           const SizedBox(height: 8),
           Text(label, textAlign: TextAlign.center),
         ],

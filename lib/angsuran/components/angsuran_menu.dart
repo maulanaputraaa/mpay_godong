@@ -5,17 +5,19 @@ class AngsuranMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildTransactionSummary(context),
-          const SizedBox(height: 30),
-          _buildMenuTitle(context),
-          const SizedBox(height: 20),
-          _buildMenuGrid(context),
-        ],
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildTransactionSummary(context),
+            const SizedBox(height: 30),
+            _buildMenuTitle(context),
+            const SizedBox(height: 20),
+            _buildMenuGrid(context),
+          ],
+        ),
       ),
     );
   }
@@ -96,7 +98,7 @@ class AngsuranMenu extends StatelessWidget {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context,'/angsuran'),
+              Navigator.pushNamed(context, '/halaman angsuran'),
         ),
         _buildMenuButton(
           context,
@@ -107,7 +109,7 @@ class AngsuranMenu extends StatelessWidget {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, '/tgihan'),
+              Navigator.pushNamed(context, '/tagihan'),
         ),
         _buildMenuButton(
           context,
@@ -140,6 +142,13 @@ class AngsuranMenu extends StatelessWidget {
         dynamic icon,
         required Color color,
         required Function() onPressed}) {
+    // Mendapatkan ukuran layar
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Mengatur ukuran padding dan icon berdasarkan lebar layar
+    final buttonPadding = screenWidth * 0.04; // Misalnya 4% dari lebar layar
+    final iconSize = screenWidth * 0.1; // Misalnya 10% dari lebar layar
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black87,
@@ -147,14 +156,14 @@ class AngsuranMenu extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(buttonPadding),
         elevation: 4,
       ),
       onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon is Image ? icon : Icon(icon, size: 40),
+          icon is Image ? icon : Icon(icon, size: iconSize),
           const SizedBox(height: 8),
           Text(label, textAlign: TextAlign.center),
         ],
