@@ -80,7 +80,7 @@ class LaporanMenu extends StatelessWidget {
 
   Widget _buildMenuTitle(BuildContext context) {
     return Text(
-      'Menu Tabungan',
+      'Menu Laporan',
       style: TextStyle(
         fontSize: MediaQuery.of(context).size.width * 0.05,
         fontWeight: FontWeight.bold,

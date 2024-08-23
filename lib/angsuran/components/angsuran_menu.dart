@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
 
 class AngsuranMenu extends StatelessWidget {
   const AngsuranMenu({super.key});
@@ -72,7 +73,7 @@ class AngsuranMenu extends StatelessWidget {
 
   Widget _buildMenuTitle(BuildContext context) {
     return Text(
-      'Menu Tabungan',
+      'Menu Angsuran',
       style: TextStyle(
         fontSize: MediaQuery.of(context).size.width * 0.05,
         fontWeight: FontWeight.bold,
@@ -109,7 +110,7 @@ class AngsuranMenu extends StatelessWidget {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, '/tagihan'),
+              Navigator.pushNamed(context, TagihanScreen.routeName),
         ),
         _buildMenuButton(
           context,
