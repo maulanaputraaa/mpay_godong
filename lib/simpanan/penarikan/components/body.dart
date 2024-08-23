@@ -85,7 +85,7 @@ class _BodyState extends State<PenarikanBody> {
   Widget _buildInputField(String label, {TextEditingController? controller, String? initialValue}) {
     return TextField(
       controller: controller ?? (initialValue != null ? TextEditingController(text: initialValue) : null),
-      keyboardType: label == 'Nominal' ? TextInputType.number : TextInputType.text,
+      keyboardType: label == 'Nominal' || label == 'Rekening' ? TextInputType.number : TextInputType.text,
       inputFormatters: label == 'Nominal' ? [FilteringTextInputFormatter.digitsOnly] : null,
       decoration: InputDecoration(
         labelText: label,

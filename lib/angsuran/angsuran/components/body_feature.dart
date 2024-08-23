@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mpay_godong/angsuran/tagihan/components/tagihan_menu.dart';
+import 'angsuran_feature_menu.dart';
 
-class TagihanBody extends StatefulWidget {
-  const TagihanBody({super.key});
+class BodyFeature extends StatefulWidget {
+  const BodyFeature({super.key});
 
   @override
-  State<TagihanBody> createState() => _BodyState();
+  State<BodyFeature> createState() => _BodyState();
 }
 
-class _BodyState extends State<TagihanBody> {
+class _BodyState extends State<BodyFeature> {
   final TextEditingController _nominalController = TextEditingController();
   final NumberFormat _currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0);
 
@@ -45,33 +45,29 @@ class _BodyState extends State<TagihanBody> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          const TagihanMenu(),
+          const AngsuranFeatureMenu(),
           const SizedBox(height: 24),
           _buildInputField('Rekening'),
           const SizedBox(height: 24),
           const Text(
-            'Nama Nasabah :',
+            'Nama Debitur',
             style: TextStyle(fontSize: 16, color: Colors.green),
           ),
           const SizedBox(height: 8),
           const Text(
-            'Alamat Nasabah :',
+            'Baki Debet',
             style: TextStyle(fontSize: 16, color: Colors.green),
           ),
+          const SizedBox(height: 24),
+          _buildInputField('Pokok'),
           const SizedBox(height: 8),
-          const Text(
-            'Tunggakan Pokok :',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
+          _buildInputField('Jasa'),
           const SizedBox(height: 8),
+          _buildInputField('Denda'),
+          const SizedBox(height: 24),
           const Text(
-            'Tunggakan Margin :',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Sisa  Pokok :',
-            style: TextStyle(fontSize: 16, color: Colors.green),
+            'Total Denda',
+            style: TextStyle(fontSize: 20, color: Colors.green),
           ),
           const SizedBox(height: 32),
           ElevatedButton(
