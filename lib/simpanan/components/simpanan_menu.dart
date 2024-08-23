@@ -8,17 +8,19 @@ class SimpananMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildTransactionSummary(context),
-          const SizedBox(height: 30),
-          _buildMenuTitle(context),
-          const SizedBox(height: 20),
-          _buildMenuGrid(context),
-        ],
+    return SingleChildScrollView( // Tambahkan SingleChildScrollView di sini
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildTransactionSummary(context),
+            const SizedBox(height: 30),
+            _buildMenuTitle(context),
+            const SizedBox(height: 20),
+            _buildMenuGrid(context),
+          ],
+        ),
       ),
     );
   }
@@ -87,7 +89,7 @@ class SimpananMenu extends StatelessWidget {
   Widget _buildMenuGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(), // Non-aktifkan scroll GridView agar SingleChildScrollView yang menangani scroll
       crossAxisCount: 2,
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -141,9 +143,16 @@ class SimpananMenu extends StatelessWidget {
 
   Widget _buildMenuButton(BuildContext context,
       {required String label,
-      dynamic icon,
-      required Color color,
-      required Function() onPressed}) {
+        dynamic icon,
+        required Color color,
+        required Function() onPressed}) {
+    // Mendapatkan ukuran layar
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Mengatur ukuran padding dan icon berdasarkan lebar layar
+    final buttonPadding = screenWidth * 0.04; // Misalnya 4% dari lebar layar
+    final iconSize = screenWidth * 0.1; // Misalnya 10% dari lebar layar
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black87,
@@ -151,14 +160,14 @@ class SimpananMenu extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(buttonPadding),
         elevation: 4,
       ),
       onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon is Image ? icon : Icon(icon, size: 40),
+          icon is Image ? icon : Icon(icon, size: iconSize),
           const SizedBox(height: 8),
           Text(label, textAlign: TextAlign.center),
         ],

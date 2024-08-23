@@ -40,42 +40,44 @@ class _BodyState extends State<PenarikanBody> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const PenarikanMenu(),
-          const SizedBox(height: 24),
-          _buildInputField('Rekening'),
-          const SizedBox(height: 16),
-          _buildInputField('Nominal', controller: _nominalController),
-          const SizedBox(height: 16),
-          _buildInputField('Keterangan', initialValue: 'TARIK TUNAI'),
-          const SizedBox(height: 24),
-          const Text(
-            'Nama Nasabah',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
-          const SizedBox(height: 8),
-          const Text(
-            'Saldo Akhir',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const PenarikanMenu(),
+            const SizedBox(height: 24),
+            _buildInputField('Rekening'),
+            const SizedBox(height: 16),
+            _buildInputField('Nominal', controller: _nominalController),
+            const SizedBox(height: 16),
+            _buildInputField('Keterangan', initialValue: 'TARIK TUNAI'),
+            const SizedBox(height: 24),
+            const Text(
+              'Nama Nasabah',
+              style: TextStyle(fontSize: 16, color: Colors.green),
             ),
-            child: const Text('PROSES', style: TextStyle(fontSize: 18)),
-          ),
-        ],
+            const SizedBox(height: 8),
+            const Text(
+              'Saldo Akhir',
+              style: TextStyle(fontSize: 16, color: Colors.green),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text('PROSES', style: TextStyle(fontSize: 18)),
+            ),
+          ],
+        ),
       ),
     );
   }

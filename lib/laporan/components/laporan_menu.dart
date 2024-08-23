@@ -5,17 +5,19 @@ class LaporanMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          _buildTransactionSummary(context),
-          const SizedBox(height: 30),
-          _buildMenuTitle(context),
-          const SizedBox(height: 20),
-          _buildMenuGrid(context),
-        ],
+    return SingleChildScrollView( // Tambahkan SingleChildScrollView di sini
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            _buildTransactionSummary(context),
+            const SizedBox(height: 30),
+            _buildMenuTitle(context),
+            const SizedBox(height: 20),
+            _buildMenuGrid(context),
+          ],
+        ),
       ),
     );
   }
@@ -39,34 +41,33 @@ class LaporanMenu extends StatelessWidget {
           ),
         ],
       ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              _buildSummaryText(context, 'Mutasi Tab : 0', FontWeight.bold),
+              const SizedBox(height: 8),
+              _buildSummaryText(context, 'Angsuran : 0', FontWeight.bold),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _buildSummaryText(context, 'Mutasi Tab : 0', FontWeight.bold),
+                _buildSummaryText(context, 'Total Uang : Rp.0'),
                 const SizedBox(height: 8),
-                _buildSummaryText(context, 'Angsuran : 0', FontWeight.bold),
+                _buildSummaryText(context, 'Total Angsuran : Rp.0'),
               ],
             ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  _buildSummaryText(context, 'Total Uang : Rp.0'),
-                  const SizedBox(height: 8),
-                  _buildSummaryText(context, 'Total Angsuran : Rp.0'),
-                ],
-              ),
-            ),
-          ],
-        )
+          ),
+        ],
+      ),
     );
   }
 
-  Widget _buildSummaryText(BuildContext context, String text,
-      [FontWeight? weight]) {
+  Widget _buildSummaryText(BuildContext context, String text, [FontWeight? weight]) {
     return Text(
       text,
       style: TextStyle(
@@ -104,8 +105,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () =>
-              Navigator.pushNamed(context, '/simpanan'),
+          onPressed: () => Navigator.pushNamed(context, '/halaman simpanan'),
         ),
         _buildMenuButton(
           context,
@@ -115,8 +115,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () =>
-              Navigator.pushNamed(context, '/pinjaman'),
+          onPressed: () => Navigator.pushNamed(context, '/pinjaman'),
         ),
         _buildMenuButton(
           context,
@@ -126,8 +125,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () =>
-              Navigator.pushNamed(context, '/rekap'),
+          onPressed: () => Navigator.pushNamed(context, '/rekap'),
         ),
         _buildMenuButton(
           context,
@@ -144,10 +142,11 @@ class LaporanMenu extends StatelessWidget {
   }
 
   Widget _buildMenuButton(BuildContext context,
-      {required String label,
-        dynamic icon,
-        required Color color,
-        required Function() onPressed}) {
+      {required String label, dynamic icon, required Color color, required Function() onPressed}) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final buttonPadding = screenWidth * 0.04;
+    final iconSize = screenWidth * 0.1;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         foregroundColor: Colors.black87,
@@ -155,14 +154,14 @@ class LaporanMenu extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
         ),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(buttonPadding),
         elevation: 4,
       ),
       onPressed: onPressed,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          icon is Image ? icon : Icon(icon, size: 40),
+          icon is Image ? icon : Icon(icon, size: iconSize),
           const SizedBox(height: 8),
           Text(label, textAlign: TextAlign.center),
         ],
