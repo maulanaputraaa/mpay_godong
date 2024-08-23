@@ -11,7 +11,8 @@ class PengaturanScreen extends StatelessWidget {
     return const Scaffold(
         appBar: TopBar(
             title:
-            Text('Pengaturan')
+            Text('Pengaturan'),
+            isSettingsPage: true,
         ),
         body: Body()
     );
