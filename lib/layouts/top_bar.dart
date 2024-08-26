@@ -4,14 +4,13 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
   final Widget title;
   final Widget? action;
-  final bool isSettingsPage; // Menambahkan parameter untuk memeriksa apakah halaman ini adalah pengaturan
-
+  final bool isSettingsPage;
   const TopBar({
     super.key,
     this.leading,
     required this.title,
     this.action,
-    this.isSettingsPage = false, // Default adalah false
+    this.isSettingsPage = false
   });
 
   @override
@@ -20,12 +19,12 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
       title: title,
       leading: leading,
       actions: [
-        if (isSettingsPage) // Menampilkan tombol logout jika halaman adalah pengaturan
+        if (isSettingsPage)
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
               // Tambahkan logika logout di sini
-              Navigator.of(context).pushNamed('/login'); // Contoh navigasi ke halaman login
+              Navigator.of(context).pushNamed('/login');
             },
           ),
         if (action != null) action!,

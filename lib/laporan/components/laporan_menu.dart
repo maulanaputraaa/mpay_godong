@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/laporan/fasilitas_anggota/fasilitas_anggota_screen.dart';
+import 'package:mpay_godong/laporan/laporan_angsuran/laporan_angsuran_screen.dart';
+import 'package:mpay_godong/laporan/laporan_simpanan/laporan_simpanan_screen.dart';
+import 'package:mpay_godong/laporan/rekap_laporan/rekap_laporan_screen.dart';
 
 class LaporanMenu extends StatelessWidget {
   const LaporanMenu({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // Tambahkan SingleChildScrollView di sini
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -92,7 +96,7 @@ class LaporanMenu extends StatelessWidget {
   Widget _buildMenuGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(), // Tambahkan ini untuk menghindari scroll di dalam GridView
+      physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -101,11 +105,12 @@ class LaporanMenu extends StatelessWidget {
           context,
           label: 'SIMPANAN',
           icon: Image.asset(
-            'assets/images/simpanan (1).png',
+            'assets/images/simpanan.png',
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/halaman simpanan'),
+          onPressed: () =>
+              Navigator.pushNamed(context, LaporanSimpananScreen.routeName),
         ),
         _buildMenuButton(
           context,
@@ -115,7 +120,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/pinjaman'),
+          onPressed: () => Navigator.pushNamed(context, LaporanAngsuranScreen.routeName),
         ),
         _buildMenuButton(
           context,
@@ -125,7 +130,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/rekap'),
+          onPressed: () => Navigator.pushNamed(context, RekapLaporanScreen.routeName),
         ),
         _buildMenuButton(
           context,
@@ -135,7 +140,7 @@ class LaporanMenu extends StatelessWidget {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/cek fasilitas anggota'),
+          onPressed: () => Navigator.pushNamed(context, FasilitasAnggotaScreen.routeName),
         ),
       ],
     );
