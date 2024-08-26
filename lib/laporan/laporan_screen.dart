@@ -13,7 +13,6 @@ class LaporanScreen extends StatelessWidget {
         appBar: TopBar(
             title:
             Text('Laporan'),
-            isSettingsPage: true,
         ),
         body: Body()
     );

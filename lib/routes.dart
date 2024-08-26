@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mpay_godong/angsuran/angsuran/angsuran_feature_screen.dart';
 import 'package:mpay_godong/angsuran/angsuran_screen.dart';
 import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
+import 'package:mpay_godong/laporan/fasilitas_anggota/fasilitas_anggota_screen.dart';
+import 'package:mpay_godong/laporan/laporan_angsuran/laporan_angsuran_screen.dart';
 import 'package:mpay_godong/laporan/laporan_screen.dart';
+import 'package:mpay_godong/laporan/laporan_simpanan/laporan_simpanan_screen.dart';
+import 'package:mpay_godong/laporan/rekap_laporan/rekap_laporan_screen.dart';
 import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/login/login_screen.dart';
 import 'package:mpay_godong/pengaturan/pengaturan_screen.dart';
@@ -24,5 +28,9 @@ final Map<String, WidgetBuilder> routes = {
   AngsuranFeatureScreen.routeName: (context) => const AngsuranFeatureScreen(),
   TagihanScreen.routeName: (context) => const TagihanScreen(),
   LaporanScreen.routeName: (context) => const LaporanScreen(),
+  LaporanSimpananScreen.routeName: (context) => const LaporanSimpananScreen(),
+  LaporanAngsuranScreen.routeName: (context) => const LaporanAngsuranScreen(),
+  RekapLaporanScreen.routeName: (context) => const RekapLaporanScreen(),
+  FasilitasAnggotaScreen.routeName: (context) => const FasilitasAnggotaScreen(),
   PengaturanScreen.routeName: (context) => const PengaturanScreen(),
 };
