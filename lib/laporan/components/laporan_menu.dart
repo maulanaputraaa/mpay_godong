@@ -137,7 +137,7 @@ class LaporanMenu extends StatelessWidget {
           label: 'CEK FASILITAS ANGGOTA',
           icon: Image.asset(
             'assets/images/cek.png',
-            height: 90,
+            height: 80,
           ),
           color: Colors.white,
           onPressed: () => Navigator.pushNamed(context, FasilitasAnggotaScreen.routeName),
