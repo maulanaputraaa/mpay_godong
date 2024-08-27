@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/models/user.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../auth/auth_provider.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({super.key});
@@ -34,10 +37,13 @@ class _LoginFormState extends State<LoginForm> {
     });
   }
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      if (_emailController.text == _user.email &&
-          _passwordController.text == _user.password) {
+      print('login');
+      final success = await context.read<AuthProvider>().login(_emailController.text, _passwordController.text);
+      print(success);
+
+      if (success) {
         Navigator.pushReplacementNamed(context, AppScreen.routeName);
       } else {
         Fluttertoast.showToast(

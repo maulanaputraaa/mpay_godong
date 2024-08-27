@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../auth/auth_provider.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget? leading;
@@ -22,8 +25,8 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
         if (isSettingsPage)
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: () {
-              // Tambahkan logika logout di sini
+            onPressed: () async {
+              final success = await context.read<AuthProvider>().logout();
               Navigator.of(context).pushNamed('/login');
             },
           ),
