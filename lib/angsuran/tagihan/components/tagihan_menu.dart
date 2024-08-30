@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../contact/contact_screen.dart';
+
 
 class TagihanMenu extends StatelessWidget {
   const TagihanMenu({super.key});
@@ -13,6 +15,7 @@ class TagihanMenu extends StatelessWidget {
           Icons.person_search,
           Colors.blue,
           onPressed: () {
+            Navigator.pushNamed(context, ContactScreen.routeName);
           },
         ),
       ],

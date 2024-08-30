@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../contact/contact_screen.dart';
+
 
 class FasilitasAnggotaMenu extends StatelessWidget {
   const FasilitasAnggotaMenu({super.key});
@@ -13,6 +15,7 @@ class FasilitasAnggotaMenu extends StatelessWidget {
           Icons.person_search,
           Colors.blue,
           onPressed: () {
+            Navigator.pushNamed(context, ContactScreen.routeName);
           },
         ),
       ],
