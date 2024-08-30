@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../contact/contact_screen.dart';
 import '../../../qr_scan/qr_scan_screen.dart';
 
 class SaldoMenu extends StatelessWidget {
@@ -14,16 +15,14 @@ class SaldoMenu extends StatelessWidget {
           Icons.person_search,
           Colors.blue,
           onPressed: () {
+            Navigator.pushNamed(context, ContactScreen.routeName);
           },
         ),
         _buildIconButton(
           Icons.qr_code_scanner,
           Colors.indigo,
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const QRScanScreen()),
-            );
+            Navigator.pushNamed(context, QRScanScreen.routeName);
           },
         ),
       ],

@@ -4,6 +4,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:mpay_godong/layouts/top_bar.dart';
 
 class QRScanScreen extends StatelessWidget {
+  static const String routeName = '/QRPage';
   const QRScanScreen({super.key});
 
   @override
