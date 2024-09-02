@@ -59,7 +59,7 @@ class _BodyState extends State<FasilitasAnggotaBody> {
                 borderRadius: BorderRadius.circular(8),
               ),
             ),
-            child: const Text('PROSES', style: TextStyle(fontSize: 18)),
+            child: const Text('PROSES', style: TextStyle(fontSize: 18,color: Colors.white)),
           ),
         ],
       ),
