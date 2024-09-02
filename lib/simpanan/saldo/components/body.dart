@@ -49,25 +49,13 @@ class _BodyState extends State<SaldoBody> {
           const SizedBox(height: 24),
           _buildInputField('Rekening'),
           const SizedBox(height: 24),
-          const Text(
-            'Nama Nasabah',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
+          _buildInfoBox('Nama Nasabah', 'John Doe'),
           const SizedBox(height: 8),
-          const Text(
-            'Alamat Nasabah',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
+          _buildInfoBox('Alamat Nasabah', 'Jl. Mawar No. 123, Jakarta'),
           const SizedBox(height: 8),
-          const Text(
-            'Rekening Nasabah',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
+          _buildInfoBox('Rekening Nasabah', '1234567890'),
           const SizedBox(height: 8),
-          const Text(
-            'Saldo Akhir',
-            style: TextStyle(fontSize: 16, color: Colors.green),
-          ),
+          _buildInfoBox('Saldo Akhir', 'Rp 10.000.000'),
           const SizedBox(height: 32),
           ElevatedButton(
             onPressed: () {},
@@ -105,6 +93,39 @@ class _BodyState extends State<SaldoBody> {
       controller: initialValue != null
           ? TextEditingController(text: initialValue)
           : null,
+    );
+  }
+
+  Widget _buildInfoBox(String title, String value) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.grey[300]!),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: const TextStyle(fontSize: 14, color: Colors.grey),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
     );
   }
 }
