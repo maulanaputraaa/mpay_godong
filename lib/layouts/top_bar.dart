@@ -31,7 +31,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
               if (success) {
                 Fluttertoast.showToast(
                   msg: "Logout successful",
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.green,
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
                 );

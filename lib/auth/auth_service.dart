@@ -37,25 +37,41 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       await _saveToken(data['authorisation']['token']);
-      await _saveFingerprintLogin(false); // Menyimpan status login non-fingerprint
+      await _saveFingerprintLogin(false);
       return true;
     }
     return false;
   }
 
-  Future<bool> loginWithFingerprint() async {
-    // Implementasi autentikasi fingerprint (disesuaikan dengan library yang digunakan)
-    // Misalnya, jika autentikasi fingerprint berhasil:
-    final fingerprintAuthSuccess = true; // Gantilah dengan implementasi fingerprint Anda
-
-    if (fingerprintAuthSuccess) {
-      final token = await getToken(); // Menggunakan token yang sudah ada
-      if (token != null) {
-        await _saveFingerprintLogin(true); // Menyimpan status login fingerprint
-        return true;
+  Future<Map<String, dynamic>> loginWithFingerprint() async {
+    try {
+      final token = await getToken();
+      if (token == null) {
+        return {'success': false, 'message': 'No token found. Please login with credentials first.'};
       }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/verify_token'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      ).timeout(Duration(seconds: 10));
+
+      if (response.statusCode == 200) {
+        await _saveFingerprintLogin(true);
+        return {'success': true, 'message': 'Login successful'};
+      } else if (response.statusCode == 401) {
+        return {'success': false, 'message': 'Token expired. Please login with credentials.'};
+      } else {
+        return {'success': false, 'message': 'Server error. Please try again later.'};
+      }
+    } catch (e) {
+      if (e is http.ClientException) {
+        return {'success': false, 'message': 'Network error. Please check your connection.'};
+      }
+      return {'success': false, 'message': 'An unexpected error occurred: ${e.toString()}'};
     }
-    return false;
   }
 
   Future<bool> logout() async {
@@ -70,7 +86,7 @@ class AuthService {
 
     if (response.statusCode == 200) {
       await _removeToken();
-      await _removeFingerprintLogin(); // Hapus status login fingerprint saat logout
+      await _removeFingerprintLogin();
       return true;
     }
     return false;
