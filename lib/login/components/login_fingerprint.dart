@@ -58,8 +58,16 @@ class LoginFingerprint extends StatelessWidget {
         const SizedBox(height: 20),
         ElevatedButton(
           onPressed: () => _authenticate(context),
-          child: const Icon(Icons.fingerprint, color: Colors.green),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
+          child: const Icon(
+            Icons.fingerprint,
+            color: Colors.white,
+          ),
         ),
+
       ],
     );
   }
