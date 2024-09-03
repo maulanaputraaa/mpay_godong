@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:provider/provider.dart';
+import '../../auth/auth_provider.dart';
 import '../../layouts/app.dart';
 
 class LoginFingerprint extends StatelessWidget {
   final LocalAuthentication auth = LocalAuthentication();
 
-  LoginFingerprint({super.key});
+  LoginFingerprint({Key? key}) : super(key: key);
 
   Future<void> _authenticate(BuildContext context) async {
     bool isBiometricSupported = await auth.isDeviceSupported();
@@ -22,23 +24,47 @@ class LoginFingerprint extends StatelessWidget {
     }
 
     bool authenticated = false;
-    authenticated = await auth.authenticate(
-      localizedReason: 'Scan your fingerprint to log in',
-      options: const AuthenticationOptions(
-        useErrorDialogs: true,
-        stickyAuth: true,
-      ),
-    );
-
-    if (authenticated) {
+    try {
+      authenticated = await auth.authenticate(
+        localizedReason: 'Scan your fingerprint to log in',
+        options: const AuthenticationOptions(
+          useErrorDialogs: true,
+          stickyAuth: true,
+        ),
+      );
+    } catch (e) {
+      print(e);
       Fluttertoast.showToast(
-        msg: 'Authentication successful',
+        msg: 'Authentication error: $e',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         textColor: Colors.white,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.red,
       );
-      Navigator.pushReplacementNamed(context, AppScreen.routeName);
+      return;
+    }
+
+    if (authenticated) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      bool loginSuccess = await authProvider.loginWithFingerprint();
+      if (loginSuccess) {
+        Fluttertoast.showToast(
+          msg: 'Authentication successful',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.green,
+        );
+        Navigator.pushReplacementNamed(context, AppScreen.routeName);
+      } else {
+        Fluttertoast.showToast(
+          msg: authProvider.lastErrorMessage,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          textColor: Colors.white,
+          backgroundColor: Colors.red,
+        );
+      }
     } else {
       Fluttertoast.showToast(
         msg: 'Authentication failed',
@@ -67,7 +93,6 @@ class LoginFingerprint extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-
       ],
     );
   }
