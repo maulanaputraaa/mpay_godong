@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-
 import '../auth/auth_provider.dart';
 
 class TopBar extends StatelessWidget implements PreferredSizeWidget {
@@ -8,12 +8,13 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
   final Widget title;
   final Widget? action;
   final bool isSettingsPage;
+
   const TopBar({
     super.key,
     this.leading,
     required this.title,
     this.action,
-    this.isSettingsPage = false
+    this.isSettingsPage = false,
   });
 
   @override
@@ -27,7 +28,21 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
             icon: const Icon(Icons.logout),
             onPressed: () async {
               final success = await context.read<AuthProvider>().logout();
-              Navigator.of(context).pushNamed('/login');
+              if (success) {
+                Fluttertoast.showToast(
+                  msg: "Logout successful",
+                  backgroundColor: Colors.red,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                );
+                Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+              } else {
+                Fluttertoast.showToast(
+                  msg: "Logout failed, please try again.",
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.BOTTOM,
+                );
+              }
             },
           ),
         if (action != null) action!,
