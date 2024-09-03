@@ -132,12 +132,15 @@ class _LoginFormState extends State<LoginForm> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
+                      backgroundColor: Colors.green,
+                      foregroundColor: Colors.white,
                     ),
                     child: const Text(
                       'Login',
-                      style: TextStyle(fontSize: 20, color: Colors.green),
+                      style: TextStyle(fontSize: 20),
                     ),
                   ),
+
                 ],
               ),
             ),

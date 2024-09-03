@@ -25,7 +25,6 @@ class AuthService {
   }
 
   Future<bool> login(String email, String password) async {
-    print(Uri.parse('$baseUrl/login'));
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
       headers: {'Content-Type': 'application/json'},
@@ -35,13 +34,26 @@ class AuthService {
       }),
     );
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      print(data);
       await _saveToken(data['authorisation']['token']);
+      await _saveFingerprintLogin(false); // Menyimpan status login non-fingerprint
       return true;
+    }
+    return false;
+  }
+
+  Future<bool> loginWithFingerprint() async {
+    // Implementasi autentikasi fingerprint (disesuaikan dengan library yang digunakan)
+    // Misalnya, jika autentikasi fingerprint berhasil:
+    final fingerprintAuthSuccess = true; // Gantilah dengan implementasi fingerprint Anda
+
+    if (fingerprintAuthSuccess) {
+      final token = await getToken(); // Menggunakan token yang sudah ada
+      if (token != null) {
+        await _saveFingerprintLogin(true); // Menyimpan status login fingerprint
+        return true;
+      }
     }
     return false;
   }
@@ -58,6 +70,7 @@ class AuthService {
 
     if (response.statusCode == 200) {
       await _removeToken();
+      await _removeFingerprintLogin(); // Hapus status login fingerprint saat logout
       return true;
     }
     return false;
@@ -76,5 +89,20 @@ class AuthService {
   Future<String?> getToken() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('auth_token');
+  }
+
+  Future<void> _saveFingerprintLogin(bool isFingerprintLogin) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_fingerprint_login', isFingerprintLogin);
+  }
+
+  Future<void> _removeFingerprintLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('is_fingerprint_login');
+  }
+
+  Future<bool> isFingerprintLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('is_fingerprint_login') ?? false;
   }
 }
