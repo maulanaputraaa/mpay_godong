@@ -22,11 +22,20 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> logout() async {
-    final success = await _authService.logout();
-    _isAuthenticated = !success;
-    notifyListeners();
-    return success;
+    try {
+      final success = await _authService.logout();
+      if (success) {
+        _isAuthenticated = false;
+        notifyListeners();
+      }
+      return success;
+    } catch (e) {
+      // Handle error
+      print('Logout error: $e');
+      return false;
+    }
   }
+
 
   Future<void> checkAuthStatus() async {
     final token = await _authService.getToken();
