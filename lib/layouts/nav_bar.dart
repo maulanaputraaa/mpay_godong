@@ -35,7 +35,7 @@ class _NavBarState extends State<NavBar> {
       items: [
         BottomBarItem(
           icon: Image.asset(
-            'assets/images/simpanan.png',
+            'assets/images/simpanan (1).png',
             height: 40,
           ),
           title: const Text('Simpanan'),
