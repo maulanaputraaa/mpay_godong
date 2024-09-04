@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mpay_godong/aktivasi/aktivasi_screen.dart';
 import 'package:mpay_godong/angsuran/angsuran/angsuran_feature_screen.dart';
 import 'package:mpay_godong/angsuran/angsuran_screen.dart';
 import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
@@ -9,9 +10,11 @@ import 'package:mpay_godong/laporan/laporan_screen.dart';
 import 'package:mpay_godong/laporan/laporan_simpanan/laporan_simpanan_screen.dart';
 import 'package:mpay_godong/laporan/rekap_laporan/rekap_laporan_screen.dart';
 import 'package:mpay_godong/layouts/app.dart';
+import 'package:mpay_godong/layouts/app_sign_up.dart';
 import 'package:mpay_godong/login/login_screen.dart';
 import 'package:mpay_godong/pengaturan/pengaturan_screen.dart';
 import 'package:mpay_godong/qr_scan/qr_scan_screen.dart';
+import 'package:mpay_godong/sign_up/sign_up_screen.dart';
 import 'package:mpay_godong/simpanan/penarikan/penarikan_screen.dart';
 import 'package:mpay_godong/simpanan/saldo/saldo_screen.dart';
 import 'package:mpay_godong/simpanan/setoran/setoran_screen.dart';
@@ -21,7 +24,10 @@ import 'package:mpay_godong/splash_screen/splash_screen.dart';
 final Map<String, WidgetBuilder> routes = {
   SplashScreen.routeName: (context) => const SplashScreen(),
   LoginScreen.routeName: (context) => const LoginScreen(),
+  SignUpScreen.routeName: (context) => const SignUpScreen(),
+  AktivasiScreen.routeName: (context) => const AktivasiScreen(),
   AppScreen.routeName: (context) => const AppScreen(),
+  AppScreenSignUp.routeName: (context) => const AppScreenSignUp(),
   ContactScreen.routeName: (context) => ContactScreen(),
   QRScanScreen.routeName: (context) => const QRScanScreen(),
   SimpananScreen.routeName: (context) => const SimpananScreen(),

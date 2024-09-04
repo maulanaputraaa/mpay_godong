@@ -15,10 +15,10 @@ class LoginScreen extends StatelessWidget {
       builder: (context, authProvider, child) {
         // Cek status autentikasi
         if (authProvider.isAuthenticated) {
-          return const SimpananScreen(); // Tampilkan HomeScreen jika sudah login
+          return const SimpananScreen();
         } else {
           return const Scaffold(
-            body: Body(), // Tampilkan LoginScreen jika belum login
+            body: Body(),
           );
         }
       },
