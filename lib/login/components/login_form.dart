@@ -4,7 +4,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/layouts/app_sign_up.dart';
 import 'package:mpay_godong/models/user.dart';
-import 'package:mpay_godong/sign_up/sign_up_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
