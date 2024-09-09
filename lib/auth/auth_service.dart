@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,30 +42,55 @@ class AuthService {
       await _saveToken(data['authorisation']['token']);
       await _saveFingerprintLogin(false);
       await _saveUserCredentials(email, password);
+
+      Fluttertoast.showToast(
+        msg: "Login berhasil",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
       return true;
+    } else {
+      Fluttertoast.showToast(
+        msg: "Login gagal. Periksa kembali email dan password Anda.",
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+
+      return false;
     }
-    return false;
   }
 
   Future<Map<String, dynamic>> loginWithFingerprint() async {
     try {
       final credentials = await _getUserCredentials();
       if (credentials == null) {
-        return {'success': false, 'message': 'No saved credentials. Please login with email and password first.'};
+        return {
+          'success': false,
+          'message': 'Harap login dengan email dan password terlebih dahulu.'
+        };
       }
 
       final success = await login(credentials['email']!, credentials['password']!);
       if (success) {
         await _saveFingerprintLogin(true);
-        return {'success': true, 'message': 'Login successful'};
+        return {'success': true, 'message': 'Login berhasil'};
       } else {
-        return {'success': false, 'message': 'Login failed. Please try again later.'};
+        return {'success': false, 'message': "Login gagal. Harap coba lagi nanti."};
       }
     } catch (e) {
       if (e is http.ClientException) {
-        return {'success': false, 'message': 'Network error. Please check your connection.'};
+        return {'success': false, 'message': 'Kesalahan jaringan. Harap periksa koneksi Anda.'};
       }
-      return {'success': false, 'message': 'An unexpected error occurred: ${e.toString()}'};
+      return {'success': false, 'message': 'Terjadi kesalahan tak terduga: ${e.toString()}'};
     }
   }
 

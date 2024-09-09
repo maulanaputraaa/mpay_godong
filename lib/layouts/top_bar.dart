@@ -30,7 +30,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
               final success = await context.read<AuthProvider>().logout();
               if (success) {
                 Fluttertoast.showToast(
-                  msg: "Logout successful",
+                  msg: "Logout berhasil",
                   backgroundColor: Colors.green,
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.CENTER,
@@ -38,7 +38,7 @@ class TopBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
               } else {
                 Fluttertoast.showToast(
-                  msg: "Logout failed, please try again.",
+                  msg: "Logout gagal, silakan coba lagi.",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.BOTTOM,
                 );
