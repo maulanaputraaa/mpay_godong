@@ -2,10 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class AuthService {
   final String baseUrl = 'https://godong.niznet.my.id/api';
+  final FlutterSecureStorage _storage = const FlutterSecureStorage();
 
   Future<bool> register(String name, String email, String password) async {
     final response = await http.post(
@@ -113,51 +114,38 @@ class AuthService {
   }
 
   Future<void> _saveToken(String token) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('auth_token', token);
+    await _storage.write(key: 'auth_token', value: token);
   }
 
   Future<void> _removeToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('auth_token');
+    await _storage.delete(key: 'auth_token');
   }
 
   Future<String?> getToken() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('auth_token');
+    return await _storage.read(key: 'auth_token');
   }
 
   Future<void> _saveFingerprintLogin(bool isFingerprintLogin) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('is_fingerprint_login', isFingerprintLogin);
+    await _storage.write(key: 'is_fingerprint_login', value: isFingerprintLogin.toString());
   }
 
   Future<void> _removeFingerprintLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('is_fingerprint_login');
+    await _storage.delete(key: 'is_fingerprint_login');
   }
 
   Future<bool> isFingerprintLogin() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getBool('is_fingerprint_login') ?? false;
+    final value = await _storage.read(key: 'is_fingerprint_login');
+    return value == 'true';
   }
 
   Future<void> _saveUserCredentials(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('email', email);
-    await prefs.setString('password', password);
-  }
-
-  Future<void> _removeUserCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('email');
-    await prefs.remove('password');
+    await _storage.write(key: 'email', value: email);
+    await _storage.write(key: 'password', value: password);
   }
 
   Future<Map<String, String>?> _getUserCredentials() async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString('email');
-    final password = prefs.getString('password');
+    final email = await _storage.read(key: 'email');
+    final password = await _storage.read(key: 'password');
     if (email != null && password != null) {
       return {'email': email, 'password': password};
     }

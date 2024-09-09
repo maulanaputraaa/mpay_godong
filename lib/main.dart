@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       title: 'Mpay Godong',
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'Lato',
       ),
       debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.routeName,
