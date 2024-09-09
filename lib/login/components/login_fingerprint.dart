@@ -16,7 +16,7 @@ class LoginFingerprint extends StatelessWidget {
 
     if (!isBiometricSupported || !canCheckBiometrics) {
       Fluttertoast.showToast(
-        msg: 'Biometric authentication is not supported on this device',
+        msg: 'Autentikasi biometrik tidak didukung pada perangkat ini',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.BOTTOM,
       );
@@ -26,7 +26,7 @@ class LoginFingerprint extends StatelessWidget {
     bool authenticated = false;
     try {
       authenticated = await auth.authenticate(
-        localizedReason: 'Scan your fingerprint to log in',
+        localizedReason: 'Pindai sidik jari Anda untuk masuk',
         options: const AuthenticationOptions(
           useErrorDialogs: true,
           stickyAuth: true,
@@ -34,7 +34,7 @@ class LoginFingerprint extends StatelessWidget {
       );
     } catch (e) {
       Fluttertoast.showToast(
-        msg: 'Authentication error: $e',
+        msg: 'Kesalahan autentikasi: $e',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         textColor: Colors.white,
@@ -48,7 +48,7 @@ class LoginFingerprint extends StatelessWidget {
       bool loginSuccess = await authProvider.loginWithFingerprint();
       if (loginSuccess) {
         Fluttertoast.showToast(
-          msg: 'Authentication successful',
+          msg: 'Autentikasi berhasil',
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           textColor: Colors.white,
@@ -66,7 +66,7 @@ class LoginFingerprint extends StatelessWidget {
       }
     } else {
       Fluttertoast.showToast(
-        msg: 'Authentication failed',
+        msg: 'Autentikasi gagal',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         textColor: Colors.white,
