@@ -33,7 +33,6 @@ class LoginFingerprint extends StatelessWidget {
         ),
       );
     } catch (e) {
-      print(e);
       Fluttertoast.showToast(
         msg: 'Authentication error: $e',
         toastLength: Toast.LENGTH_SHORT,

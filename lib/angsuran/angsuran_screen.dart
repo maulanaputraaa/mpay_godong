@@ -13,7 +13,9 @@ class AngsuranScreen extends StatelessWidget {
             title:
             Text('Angsuran')
         ),
-        body: Body()
+        body: SingleChildScrollView(
+          child: Body(),
+      ),
     );
   }
 }

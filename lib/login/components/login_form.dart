@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/layouts/app_sign_up.dart';
-import 'package:mpay_godong/models/user.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -22,29 +21,43 @@ class _LoginFormState extends State<LoginForm> {
   final _formKey = GlobalKey<FormState>();
 
   late SharedPreferences _prefs;
-  late User _user;
+  bool _isPasswordVisible = false;
 
   @override
   void initState() {
     super.initState();
-    SharedPreferences.getInstance().then((prefs) {
-      _prefs = prefs;
-      _user = User(
-        email: _prefs.getString('email') ?? '',
-        password: _prefs.getString('password') ?? '',
-      );
-      _emailController.text = _user.email;
-      _passwordController.text = _user.password;
+    _loadUserCredentials();
+  }
+
+  void _loadUserCredentials() async {
+    _prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _emailController.text = _prefs.getString('email') ?? '';
+      _passwordController.text = _prefs.getString('password') ?? '';
+    });
+  }
+
+  Future<void> _saveUserCredentials(String email, String password) async {
+    await _prefs.setString('email', email);
+    await _prefs.setString('password', password);
+  }
+
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
     });
   }
 
   void _login() async {
     if (_formKey.currentState?.validate() ?? false) {
-      print('login');
-      final success = await context.read<AuthProvider>().login(_emailController.text, _passwordController.text);
-      print(success);
+      final email = _emailController.text;
+      final password = _passwordController.text;
+
+      final success = await context.read<AuthProvider>().login(email, password);
 
       if (success) {
+        await _saveUserCredentials(email, password);
+
         Navigator.pushReplacementNamed(context, AppScreen.routeName);
       } else {
         Fluttertoast.showToast(
@@ -70,7 +83,8 @@ class _LoginFormState extends State<LoginForm> {
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(
-                maxWidth: screenWidth * 0.9),
+              maxWidth: screenWidth * 0.9,
+            ),
             child: Form(
               key: _formKey,
               child: Column(
@@ -116,8 +130,16 @@ class _LoginFormState extends State<LoginForm> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       prefixIcon: const Icon(Icons.lock),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                        onPressed: _togglePasswordVisibility,
+                      ),
                     ),
-                    obscureText: true,
+                    obscureText: !_isPasswordVisible,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Silahkan Masukkan Password Anda';
@@ -141,7 +163,6 @@ class _LoginFormState extends State<LoginForm> {
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
-
                 ],
               ),
             ),
@@ -172,7 +193,6 @@ class SignUpButton extends StatelessWidget {
               ),
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
-                  // Navigasi ke halaman pendaftaran (sign up)
                   Navigator.pushNamed(context, AppScreenSignUp.routeName);
                 },
             ),
