@@ -28,35 +28,22 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> loginWithFingerprint() async {
-    print('Attempting login with fingerprint');
-
     final result = await _authService.loginWithFingerprint();
     _isAuthenticated = result['success'];
     _isFingerprintLogin = result['success'];
     _lastErrorMessage = result['success'] ? '' : result['message'];
-
-    print('Login with fingerprint result: ${result['success']}');
-    if (!result['success']) {
-      print('Login error: ${result['message']}');
-    }
-
     notifyListeners();
     return result['success'];
   }
 
   Future<bool> logout() async {
-    try {
-      final success = await _authService.logout();
-      if (success) {
-        _isAuthenticated = false;
-        _isFingerprintLogin = false;
-        notifyListeners();
-      }
-      return success;
-    } catch (e) {
-      print('Logout error: $e');
-      return false;
+    final success = await _authService.logout();
+    if (success) {
+      _isAuthenticated = false;
+      _isFingerprintLogin = false; // Keep this to reset fingerprint login flag
+      notifyListeners();
     }
+    return success;
   }
 
   Future<void> checkAuthStatus() async {

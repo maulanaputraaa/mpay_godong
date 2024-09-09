@@ -14,7 +14,9 @@ class LaporanScreen extends StatelessWidget {
             title:
             Text('Laporan'),
         ),
-        body: Body()
+        body: SingleChildScrollView(
+          child: Body(),
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ class PengaturanScreen extends StatelessWidget {
   static const String routeName = '/pengaturan';
 
   const PengaturanScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
@@ -14,7 +15,9 @@ class PengaturanScreen extends StatelessWidget {
             Text('Pengaturan'),
             isSettingsPage: true,
         ),
-        body: Body()
+      body: SingleChildScrollView(
+        child: Body(),
+      ),
     );
   }
 }

@@ -19,6 +19,7 @@ class AuthService {
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       await _saveToken(data['authorisation']['token']);
+      await _saveUserCredentials(email, password);
       return true;
     }
     return false;
@@ -38,6 +39,7 @@ class AuthService {
       final data = jsonDecode(response.body);
       await _saveToken(data['authorisation']['token']);
       await _saveFingerprintLogin(false);
+      await _saveUserCredentials(email, password);
       return true;
     }
     return false;
@@ -45,26 +47,17 @@ class AuthService {
 
   Future<Map<String, dynamic>> loginWithFingerprint() async {
     try {
-      final token = await getToken();
-      if (token == null) {
-        return {'success': false, 'message': 'No token found. Please login with credentials first.'};
+      final credentials = await _getUserCredentials();
+      if (credentials == null) {
+        return {'success': false, 'message': 'No saved credentials. Please login with email and password first.'};
       }
 
-      final response = await http.post(
-        Uri.parse('$baseUrl/verify_token'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-      ).timeout(Duration(seconds: 10));
-
-      if (response.statusCode == 200) {
+      final success = await login(credentials['email']!, credentials['password']!);
+      if (success) {
         await _saveFingerprintLogin(true);
         return {'success': true, 'message': 'Login successful'};
-      } else if (response.statusCode == 401) {
-        return {'success': false, 'message': 'Token expired. Please login with credentials.'};
       } else {
-        return {'success': false, 'message': 'Server error. Please try again later.'};
+        return {'success': false, 'message': 'Login failed. Please try again later.'};
       }
     } catch (e) {
       if (e is http.ClientException) {
@@ -86,7 +79,7 @@ class AuthService {
 
     if (response.statusCode == 200) {
       await _removeToken();
-      await _removeFingerprintLogin();
+      await _removeFingerprintLogin(); // Optional: remove fingerprint flag if necessary
       return true;
     }
     return false;
@@ -120,5 +113,27 @@ class AuthService {
   Future<bool> isFingerprintLogin() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getBool('is_fingerprint_login') ?? false;
+  }
+
+  Future<void> _saveUserCredentials(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+  }
+
+  Future<void> _removeUserCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('email');
+    await prefs.remove('password');
+  }
+
+  Future<Map<String, String>?> _getUserCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final email = prefs.getString('email');
+    final password = prefs.getString('password');
+    if (email != null && password != null) {
+      return {'email': email, 'password': password};
+    }
+    return null;
   }
 }
