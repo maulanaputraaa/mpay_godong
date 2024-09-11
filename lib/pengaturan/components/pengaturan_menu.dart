@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mac_address/mac_address.dart';
 
 class PengaturanMenu extends StatefulWidget {
   const PengaturanMenu({super.key});
@@ -9,28 +8,6 @@ class PengaturanMenu extends StatefulWidget {
 }
 
 class _PengaturanMenuState extends State<PengaturanMenu> {
-  String macAddress = "Memuat...";
-
-  @override
-  void initState() {
-    super.initState();
-    _getMacAddress();
-  }
-
-  Future<void> _getMacAddress() async {
-    try {
-      // Mendapatkan MAC address menggunakan library mac_address
-      String? result = await GetMac.macAddress;
-      setState(() {
-        macAddress = result ?? "Tidak ditemukan";
-      });
-    } catch (e) {
-      setState(() {
-        macAddress = "Gagal mendapatkan MAC Address";
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -73,7 +50,7 @@ class _PengaturanMenuState extends State<PengaturanMenu> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildSummaryText(context, 'MAC Address: $macAddress', FontWeight.bold),
+              _buildSummaryText(context, 'Informasi Pengaturan', FontWeight.bold),
             ],
           ),
         ],

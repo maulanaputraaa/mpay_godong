@@ -3,7 +3,7 @@ import 'package:mpay_godong/aktivasi/aktivasi_screen.dart';
 import 'package:mpay_godong/angsuran/angsuran/angsuran_feature_screen.dart';
 import 'package:mpay_godong/angsuran/angsuran_screen.dart';
 import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
-import 'package:mpay_godong/contact/contact_screen.dart';
+import 'package:mpay_godong/nasabah/nasabah_screen.dart';
 import 'package:mpay_godong/laporan/fasilitas_anggota/fasilitas_anggota_screen.dart';
 import 'package:mpay_godong/laporan/laporan_angsuran/laporan_angsuran_screen.dart';
 import 'package:mpay_godong/laporan/laporan_screen.dart';
@@ -28,7 +28,7 @@ final Map<String, WidgetBuilder> routes = {
   AktivasiScreen.routeName: (context) => const AktivasiScreen(),
   AppScreen.routeName: (context) => const AppScreen(),
   AppScreenSignUp.routeName: (context) => const AppScreenSignUp(),
-  ContactScreen.routeName: (context) => ContactScreen(),
+  NasabahScreen.routeName: (context) => const NasabahScreen(),
   QRScanScreen.routeName: (context) => const QRScanScreen(),
   SimpananScreen.routeName: (context) => const SimpananScreen(),
   SetoranScreen.routeName: (context) => const SetoranScreen(),
