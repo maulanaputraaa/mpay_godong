@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../contact/contact_screen.dart';
+import '../../../nasabah/nasabah_screen.dart';
 import '../../../qr_scan/qr_scan_screen.dart';
 
 class AngsuranFeatureMenu extends StatelessWidget {
@@ -14,7 +14,7 @@ class AngsuranFeatureMenu extends StatelessWidget {
           Icons.person_search,
           Colors.blue,
           onPressed: () {
-            Navigator.pushNamed(context, ContactScreen.routeName);
+            Navigator.pushNamed(context, NasabahScreen.routeName);
           },
         ),
         _buildIconButton(

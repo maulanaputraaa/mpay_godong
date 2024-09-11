@@ -8,7 +8,7 @@ import '../../layouts/app.dart';
 class LoginFingerprint extends StatelessWidget {
   final LocalAuthentication auth = LocalAuthentication();
 
-  LoginFingerprint({Key? key}) : super(key: key);
+  LoginFingerprint({super.key});
 
   Future<void> _authenticate(BuildContext context) async {
     bool isBiometricSupported = await auth.isDeviceSupported();

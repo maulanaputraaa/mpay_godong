@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'contact_menu.dart';
+import 'nasabah_menu.dart';
 
 class Body extends StatelessWidget {
+  const Body({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
+    return const Padding(
+      padding: EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Text(
+          Text(
             "Daftar Nasabah",
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 20),
-          ContactMenu(),
+          SizedBox(height: 20),
+          NasabahMenu(),
         ],
       ),
     );
