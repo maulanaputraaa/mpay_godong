@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'saldo_menu.dart'; // Pastikan ini adalah referensi yang benar ke SaldoMenu
+import 'saldo_menu.dart';
 
 // Model Nasabah
 class Nasabah {
@@ -71,13 +71,12 @@ class _SaldoBodyState extends State<SaldoBody> {
 
   bool isLoading = false;
 
-  // Simulating delay for data fetching
   Future<void> fetchNasabahData(String rekening) async {
     setState(() {
       isLoading = true;
     });
 
-    await Future.delayed(const Duration(seconds: 2)); // Simulate delay
+    await Future.delayed(const Duration(seconds: 2));
 
     List<Nasabah> suggestions = await fetchNasabahSuggestions(rekening);
 
@@ -109,7 +108,7 @@ class _SaldoBodyState extends State<SaldoBody> {
       double saldoValue = double.parse(saldo);
       return formatter.format(saldoValue);
     } catch (e) {
-      return saldo; // Jika format saldo tidak valid, tampilkan tanpa perubahan
+      return saldo;
     }
   }
 
@@ -120,7 +119,7 @@ class _SaldoBodyState extends State<SaldoBody> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          const SaldoMenu(), // Referensi ke SaldoMenu
+          const SaldoMenu(),
           const SizedBox(height: 24),
           _buildAutocompleteInput(),
           const SizedBox(height: 24),
@@ -173,7 +172,6 @@ class _SaldoBodyState extends State<SaldoBody> {
         });
       },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
-        // Tambahkan logika untuk menghapus data jika text field kosong
         fieldTextEditingController.addListener(() {
           if (fieldTextEditingController.text.isEmpty) {
             setState(() {
@@ -190,7 +188,7 @@ class _SaldoBodyState extends State<SaldoBody> {
           child: TextField(
             controller: fieldTextEditingController,
             focusNode: fieldFocusNode,
-            keyboardType: TextInputType.number,
+            keyboardType: TextInputType.text,
             decoration: InputDecoration(
               labelText: 'Rekening',
               labelStyle: TextStyle(color: Colors.grey[600]),
@@ -199,7 +197,7 @@ class _SaldoBodyState extends State<SaldoBody> {
                 borderRadius: BorderRadius.circular(12),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent),
+                borderSide: const BorderSide(color: Colors.blueAccent),
                 borderRadius: BorderRadius.circular(12),
               ),
               filled: true,
@@ -216,15 +214,13 @@ class _SaldoBodyState extends State<SaldoBody> {
             elevation: 4,
             borderRadius: BorderRadius.circular(8),
             child: Container(
-              constraints: BoxConstraints(
-                maxHeight: 180, // Batasi tinggi maksimal dari menu opsi
-              ),
+              constraints: const BoxConstraints(maxHeight: 180),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(8),
                 color: Colors.white,
               ),
               child: ListView.builder(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
                 itemCount: options.length,
                 itemBuilder: (BuildContext context, int index) {
                   final Nasabah option = options.elementAt(index);
@@ -233,7 +229,7 @@ class _SaldoBodyState extends State<SaldoBody> {
                       onSelected(option);
                     },
                     child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0),
+                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -247,11 +243,18 @@ class _SaldoBodyState extends State<SaldoBody> {
                         ],
                       ),
                       child: ListTile(
+                        leading: const Icon(
+                          Icons.person,
+                          color: Colors.green,
+                        ),
                         title: Text(
                           option.rekening,
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                         ),
-                        subtitle: Text(option.nama),
+                        subtitle: Text(
+                          option.nama,
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ),
                     ),
                   );
@@ -263,6 +266,7 @@ class _SaldoBodyState extends State<SaldoBody> {
       },
     );
   }
+
 
   Widget _buildInfoBox(String title, String value, {bool isSaldo = false}) {
     String displayValue = isSaldo ? formatRupiah(value) : value;
