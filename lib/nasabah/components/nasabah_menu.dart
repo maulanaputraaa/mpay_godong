@@ -2,60 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-
-// Model nasabah
-class Nasabah {
-  final String rekening;
-  final String rekeningLama;
-  final String tgl;
-  final String kode;
-  final String namaNasabah;
-  final String golonganTabungan;
-  final String statusBlokir;
-  final double jumlahBlokir;
-  final String tglPenutupan;
-  final String keteranganBlokir;
-  final double saldoAkhir;
-  final String pekerjaan;
-  final String userName;
-
-  Nasabah({
-    required this.rekening,
-    required this.rekeningLama,
-    required this.tgl,
-    required this.kode,
-    required this.namaNasabah,
-    required this.golonganTabungan,
-    required this.statusBlokir,
-    required this.jumlahBlokir,
-    required this.tglPenutupan,
-    required this.keteranganBlokir,
-    required this.saldoAkhir,
-    required this.pekerjaan,
-    required this.userName,
-  });
-
-  factory Nasabah.fromJson(Map<String, dynamic> json) {
-    return Nasabah(
-      rekening: json['Rekening'],
-      rekeningLama: json['RekeningLama'] ?? '',
-      tgl: json['Tgl'],
-      kode: json['Kode'] ?? '',
-      namaNasabah: json['NamaNasabah'],
-      golonganTabungan: json['GolonganTabungan'] ?? '',
-      statusBlokir: json['StatusBlokir'],
-      jumlahBlokir: json['JumlahBlokir'].toDouble(),
-      tglPenutupan: json['TglPenutupan'] ?? '',
-      keteranganBlokir: json['KeteranganBlokir'] ?? '',
-      saldoAkhir: json['SaldoAkhir'].toDouble(),
-      pekerjaan: json['Pekerjaan'] ?? '',
-      userName: json['UserName'] ?? '',
-    );
-  }
-}
+import '../../models/tabungan_nasabah.dart';
 
 // Ambil data dari API dengan token JWT
-
 Future<List<Nasabah>> fetchNasabah({int page = 1}) async {
   const storage = FlutterSecureStorage();
   final token = await storage.read(key: 'auth_token');
@@ -70,6 +19,7 @@ Future<List<Nasabah>> fetchNasabah({int page = 1}) async {
   );
 
   if (response.statusCode == 200) {
+    print('Response body: ${response.body}');
     Map<String, dynamic> parsedResponse = json.decode(response.body);
 
     List<dynamic> data = parsedResponse['data'];

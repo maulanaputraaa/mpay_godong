@@ -34,10 +34,7 @@ class _NavBarState extends State<NavBar> {
       ),
       items: [
         BottomBarItem(
-          icon: Image.asset(
-            'assets/images/simpanan (1).png',
-            height: 40,
-          ),
+          icon: const Icon(Icons.data_saver_off),
           title: const Text('Simpanan'),
         ),
         BottomBarItem(
