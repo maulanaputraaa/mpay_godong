@@ -5,30 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import '../../../models/setoran_nasabah.dart';
 import 'setoran_menu.dart';
-
-class Nasabah {
-  final String nama;
-  final String alamat;
-  final String rekening;
-  final String saldo;
-
-  Nasabah({
-    required this.nama,
-    required this.alamat,
-    required this.rekening,
-    required this.saldo,
-  });
-
-  factory Nasabah.fromJson(Map<String, dynamic> json) {
-    return Nasabah(
-      nama: json['nasabah']?['Nama'] ?? 'Tidak Ditemukan',
-      alamat: json['nasabah']?['Alamat'] ?? 'Tidak Ditemukan',
-      rekening: json['Rekening'] ?? 'Tidak Ditemukan',
-      saldo: json['SaldoAkhir']?.toString() ?? 'Tidak Ditemukan',
-    );
-  }
-}
 
 Future<List<Nasabah>> fetchNasabahSuggestions(String query) async {
   const storage = FlutterSecureStorage();
@@ -49,8 +28,8 @@ Future<List<Nasabah>> fetchNasabahSuggestions(String query) async {
 
     return data.map((json) => Nasabah.fromJson(json)).toList();
   } else {
-    print('Failed to load nasabah. Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
+    print('Gagal memuat nasabah. Kode status: ${response.statusCode}');
+    print('Isi respons: ${response.body}');
     return [];
   }
 }
@@ -114,7 +93,7 @@ class _SetoranBodyState extends State<SetoranBody> {
       final storage = FlutterSecureStorage();
       final token = await storage.read(key: 'auth_token');
 
-      final url = 'https://godong.niznet.my.id/api/mutasi-tabungan';
+      const url = 'https://godong.niznet.my.id/api/mutasi-tabungan';
       final response = await http.post(
         Uri.parse(url),
         headers: {
@@ -122,35 +101,61 @@ class _SetoranBodyState extends State<SetoranBody> {
           'Authorization': 'Bearer $token',
         },
         body: json.encode({
-          'CabangEntry': '001', // Replace with actual branch info if necessary
-          'Faktur': 'INV${DateTime.now().millisecondsSinceEpoch}', // Example invoice number
+          'CabangEntry': '001',
+          'Faktur': 'INV${DateTime.now().millisecondsSinceEpoch}',
           'Tgl': DateFormat('yyyy-MM-dd').format(DateTime.now()),
           'Rekening': _rekeningController.text,
           'KodeTransaksi': generateTransactionCode(),
-          'DK': 'K', // Debit or Credit, based on your logic
+          'DK': 'K',
           'Keterangan': _keteranganController.text,
           'Jumlah': double.parse(_nominalController.text.replaceAll(RegExp(r'[^\d]'), '')),
           'Debet': 0,
-          'Kredit': 0, // Assuming it's a credit transaction
-          'UserName': '', // Replace with actual user info if necessary
+          'Kredit': 0,
+          'UserName': '',
           'DateTime': DateFormat('yyyy-MM-ddTHH:mm:ss').format(DateTime.now()),
-          'UserAcc': '', // Replace with actual user account info if necessary
-          'Denda': 0, // Assuming no penalty
+          'UserAcc': '',
+          'Denda': 0,
         }),
       );
 
       if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Setoran berhasil diproses!')),
+        Fluttertoast.showToast(
+          msg: 'Setoran berhasil diproses!',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
+        // Reset fields after succes
+        setState(() {
+          _rekeningController.clear();
+          _nominalController.clear();
+          _keteranganController.text = 'SETOR TUNAI';
+          namaNasabah = null;
+          saldoAkhir = null;
+        });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal memproses setoran.')),
+        Fluttertoast.showToast(
+          msg: 'Gagal memproses setoran.',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0,
         );
       }
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Terjadi kesalahan.')),
+      Fluttertoast.showToast(
+        msg: 'Terjadi kesalahan.',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
       print('Error: $e');
     } finally {

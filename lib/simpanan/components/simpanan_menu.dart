@@ -1,20 +1,113 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:mpay_godong/simpanan/penarikan/penarikan_screen.dart';
-import 'package:mpay_godong/simpanan/saldo/saldo_screen.dart';
-import 'package:mpay_godong/simpanan/setoran/setoran_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart'; // Import intl package
+import '../../models/mutasi_nasabah.dart';
+import '../penarikan/penarikan_screen.dart';
+import '../saldo/saldo_screen.dart';
+import '../setoran/setoran_screen.dart';
 
-class SimpananMenu extends StatelessWidget {
+class SimpananMenu extends StatefulWidget {
   const SimpananMenu({super.key});
 
   @override
+  _SimpananMenuState createState() => _SimpananMenuState();
+}
+
+class _SimpananMenuState extends State<SimpananMenu> {
+  late Future<Map<String, dynamic>> _summaryFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndUpdateSummary();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh summary data when dependencies change, i.e., when user returns to this page
+    _fetchAndUpdateSummary();
+  }
+
+  void _fetchAndUpdateSummary() {
+    setState(() {
+      _summaryFuture = fetchSummary();
+    });
+  }
+
+  Future<Map<String, dynamic>> fetchSummary() async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'auth_token');
+    const url = 'https://godong.niznet.my.id/api/mutasi-tabungan?per_page=-1';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print('Isi respons: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List<dynamic>;
+
+      int transaksiTotal = 0;
+      double setoranTotal = 0.0;
+      double penarikanTotal = 0.0;
+
+      for (var item in data) {
+        final mutasi = MutasiTabungan.fromJson(item as Map<String, dynamic>);
+        transaksiTotal += 1;
+        if (mutasi.dk == 'K') {
+          setoranTotal += mutasi.jumlah;
+        } else if (mutasi.dk == 'D') {
+          penarikanTotal += mutasi.jumlah;
+        }
+      }
+
+      return {
+        'transaksi': transaksiTotal,
+        'setoran': setoranTotal,
+        'penarikan': penarikanTotal,
+      };
+    } else {
+      print('Gagal memuat ringkasan. Kode status: ${response.statusCode}');
+      print('Isi respons: ${response.body}');
+      throw Exception('Failed to load summary');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView( // Tambahkan SingleChildScrollView di sini
+    return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildTransactionSummary(context),
+            FutureBuilder<Map<String, dynamic>>(
+              future: _summaryFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final data = snapshot.data!;
+                  return _buildTransactionSummary(
+                    context,
+                    transaksi: data['transaksi'] as int,
+                    setoran: data['setoran'] as double,
+                    penarikan: data['penarikan'] as double,
+                  );
+                } else {
+                  return Text('No data available');
+                }
+              },
+            ),
             const SizedBox(height: 30),
             _buildMenuTitle(context),
             const SizedBox(height: 20),
@@ -25,7 +118,13 @@ class SimpananMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionSummary(BuildContext context) {
+  Widget _buildTransactionSummary(BuildContext context, {
+    required int transaksi,
+    required double setoran,
+    required double penarikan
+  }) {
+    final currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
+
     return Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -47,14 +146,14 @@ class SimpananMenu extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _buildSummaryText(context, 'Transaksi : 0', FontWeight.bold),
+          _buildSummaryText(context, 'Transaksi : $transaksi', FontWeight.bold),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _buildSummaryText(context, 'Setoran : Rp.0'),
+                _buildSummaryText(context, 'Setoran : ${currencyFormat.format(setoran)}'),
                 const SizedBox(height: 8),
-                _buildSummaryText(context, 'Penarikan : Rp.0'),
+                _buildSummaryText(context, 'Penarikan : ${currencyFormat.format(penarikan)}'),
               ],
             ),
           ),
@@ -63,8 +162,7 @@ class SimpananMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildSummaryText(BuildContext context, String text,
-      [FontWeight? weight]) {
+  Widget _buildSummaryText(BuildContext context, String text, [FontWeight? weight]) {
     return Text(
       text,
       style: TextStyle(
@@ -89,7 +187,7 @@ class SimpananMenu extends StatelessWidget {
   Widget _buildMenuGrid(BuildContext context) {
     return GridView.count(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(), // Non-aktifkan scroll GridView agar SingleChildScrollView yang menangani scroll
+      physics: const NeverScrollableScrollPhysics(),
       crossAxisCount: 2,
       crossAxisSpacing: 16.0,
       mainAxisSpacing: 16.0,
@@ -146,12 +244,9 @@ class SimpananMenu extends StatelessWidget {
         dynamic icon,
         required Color color,
         required Function() onPressed}) {
-    // Mendapatkan ukuran layar
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Mengatur ukuran padding dan icon berdasarkan lebar layar
-    final buttonPadding = screenWidth * 0.04; // Misalnya 4% dari lebar layar
-    final iconSize = screenWidth * 0.1; // Misalnya 10% dari lebar layar
+    final buttonPadding = screenWidth * 0.04;
+    final iconSize = screenWidth * 0.1;
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
