@@ -90,7 +90,7 @@ class _PenarikanBodyState extends State<PenarikanBody> {
     });
 
     try {
-      final storage = FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       final token = await storage.read(key: 'auth_token');
 
       const url = 'https://godong.niznet.my.id/api/mutasi-tabungan';
@@ -264,10 +264,13 @@ class _PenarikanBodyState extends State<PenarikanBody> {
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
                         children: [
-                          const Icon(Icons.person, color: Colors.green),
+                          const Icon(Icons.account_circle, color: Colors.green),
                           const SizedBox(width: 16),
                           Expanded(
-                            child: Text(option.rekening, style: const TextStyle(fontSize: 16)),
+                            child: Text(
+                              '${option.rekening} - ${option.nama}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
                         ],
                       ),

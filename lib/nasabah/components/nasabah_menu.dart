@@ -19,7 +19,6 @@ Future<List<Nasabah>> fetchNasabah({int page = 1}) async {
   );
 
   if (response.statusCode == 200) {
-    print('Response body: ${response.body}');
     Map<String, dynamic> parsedResponse = json.decode(response.body);
 
     List<dynamic> data = parsedResponse['data'];
@@ -32,9 +31,7 @@ Future<List<Nasabah>> fetchNasabah({int page = 1}) async {
 
     return nasabahList;
   } else {
-    print('Failed to load nasabah. Status code: ${response.statusCode}');
-    print('Response body: ${response.body}');
-    throw Exception('Failed to load nasabah');
+    throw Exception('Gagal memuat nasabah.');
   }
 }
 
@@ -129,7 +126,6 @@ class NasabahMenu extends StatelessWidget {
                 rekening: nasabah.rekening,
                 kode: nasabah.kode,
                 onTap: () {
-                  // Aksi ketika item ditekan, misalnya navigasi ke halaman detail
                   Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -50,21 +50,33 @@ class _SetoranBodyState extends State<SetoranBody> {
   String? namaNasabah;
   String? saldoAkhir;
   bool isLoading = false;
+  String lastSelectedRekening = '';
 
   @override
   void initState() {
     super.initState();
     _nominalController.addListener(_formatNominal);
     _keteranganController.text = 'SETOR TUNAI';
+    _rekeningController.addListener(_onRekeningChanged);
   }
 
   @override
   void dispose() {
+    _rekeningController.removeListener(_onRekeningChanged);
     _rekeningController.dispose();
     _nominalController.removeListener(_formatNominal);
     _nominalController.dispose();
     _keteranganController.dispose();
     super.dispose();
+  }
+
+  void _onRekeningChanged() {
+    if (_rekeningController.text != lastSelectedRekening) {
+      setState(() {
+        namaNasabah = null;
+        saldoAkhir = null;
+      });
+    }
   }
 
   void _formatNominal() {
@@ -85,6 +97,15 @@ class _SetoranBodyState extends State<SetoranBody> {
   }
 
   Future<void> _processSetoran() async {
+    if (namaNasabah == null || saldoAkhir == null) {
+      Fluttertoast.showToast(
+        msg: 'Pilih nasabah yang valid terlebih dahulu.',
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -128,13 +149,14 @@ class _SetoranBodyState extends State<SetoranBody> {
           textColor: Colors.white,
           fontSize: 16.0,
         );
-        // Reset fields after succes
+        // Reset fields after success
         setState(() {
           _rekeningController.clear();
           _nominalController.clear();
           _keteranganController.text = 'SETOR TUNAI';
           namaNasabah = null;
           saldoAkhir = null;
+          lastSelectedRekening = '';
         });
       } else {
         Fluttertoast.showToast(
@@ -187,7 +209,7 @@ class _SetoranBodyState extends State<SetoranBody> {
             _buildInfoBox('Saldo Akhir', saldoAkhir ?? 'Belum Ada Data'),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: isLoading ? null : _processSetoran,
+              onPressed: (isLoading || namaNasabah == null || saldoAkhir == null) ? null : _processSetoran,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -219,6 +241,7 @@ class _SetoranBodyState extends State<SetoranBody> {
           _rekeningController.text = selectedNasabah.rekening;
           namaNasabah = selectedNasabah.nama;
           saldoAkhir = _currencyFormat.format(double.parse(selectedNasabah.saldo));
+          lastSelectedRekening = selectedNasabah.rekening;
         });
       },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
@@ -237,11 +260,14 @@ class _SetoranBodyState extends State<SetoranBody> {
             filled: true,
             fillColor: Colors.grey[200],
           ),
+          onChanged: (value) {
+            _rekeningController.text = value;
+          },
         );
       },
       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Nasabah> onSelected, Iterable<Nasabah> options) {
         final itemCount = options.length;
-        final maxHeight = (itemCount > 0 ? (itemCount * 60.0) : 0.0).clamp(0.0, 300.0); // Ensure values are of type double
+        final maxHeight = (itemCount > 0 ? (itemCount * 60.0) : 0.0).clamp(0.0, 300.0);
 
         return Align(
           alignment: Alignment.topLeft,

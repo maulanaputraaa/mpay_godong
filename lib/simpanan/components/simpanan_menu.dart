@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart'; // Import intl package
+import 'package:intl/intl.dart';
 import '../../models/mutasi_nasabah.dart';
 import '../penarikan/penarikan_screen.dart';
 import '../saldo/saldo_screen.dart';
@@ -27,7 +27,6 @@ class _SimpananMenuState extends State<SimpananMenu> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Refresh summary data when dependencies change, i.e., when user returns to this page
     _fetchAndUpdateSummary();
   }
 
@@ -92,7 +91,7 @@ class _SimpananMenuState extends State<SimpananMenu> {
               future: _summaryFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (snapshot.hasData) {
@@ -104,7 +103,7 @@ class _SimpananMenuState extends State<SimpananMenu> {
                     penarikan: data['penarikan'] as double,
                   );
                 } else {
-                  return Text('No data available');
+                  return const Text('No data available');
                 }
               },
             ),
@@ -201,7 +200,9 @@ class _SimpananMenuState extends State<SimpananMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, SetoranScreen.routeName),
+              Navigator.pushNamed(context, SetoranScreen.routeName).then((_) {
+                _fetchAndUpdateSummary();
+              }),
         ),
         _buildMenuButton(
           context,
@@ -212,7 +213,9 @@ class _SimpananMenuState extends State<SimpananMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, PenarikanScreen.routeName),
+              Navigator.pushNamed(context, PenarikanScreen.routeName).then((_) {
+                _fetchAndUpdateSummary();
+              }),
         ),
         _buildMenuButton(
           context,
@@ -223,7 +226,9 @@ class _SimpananMenuState extends State<SimpananMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, SaldoScreen.routeName),
+              Navigator.pushNamed(context, SaldoScreen.routeName).then((_) {
+                _fetchAndUpdateSummary();
+              }),
         ),
         _buildMenuButton(
           context,
@@ -233,7 +238,9 @@ class _SimpananMenuState extends State<SimpananMenu> {
             height: 90,
           ),
           color: Colors.white,
-          onPressed: () => Navigator.pushNamed(context, '/reprint'),
+          onPressed: () => Navigator.pushNamed(context, '/reprint').then((_) {
+            _fetchAndUpdateSummary();
+          }),
         ),
       ],
     );
