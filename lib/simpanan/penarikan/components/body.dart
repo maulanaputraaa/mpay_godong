@@ -50,21 +50,33 @@ class _PenarikanBodyState extends State<PenarikanBody> {
   String? namaNasabah;
   String? saldoAkhir;
   bool isLoading = false;
+  String lastSelectedRekening = '';
 
   @override
   void initState() {
     super.initState();
     _nominalController.addListener(_formatNominal);
     _keteranganController.text = 'TARIK TUNAI';
+    _rekeningController.addListener(_onRekeningChanged);
   }
 
   @override
   void dispose() {
+    _rekeningController.removeListener(_onRekeningChanged);
     _rekeningController.dispose();
     _nominalController.removeListener(_formatNominal);
     _nominalController.dispose();
     _keteranganController.dispose();
     super.dispose();
+  }
+
+  void _onRekeningChanged() {
+    if (_rekeningController.text != lastSelectedRekening) {
+      setState(() {
+        namaNasabah = null;
+        saldoAkhir = null;
+      });
+    }
   }
 
   void _formatNominal() {
@@ -187,7 +199,7 @@ class _PenarikanBodyState extends State<PenarikanBody> {
             _buildInfoBox('Saldo Akhir', saldoAkhir ?? 'Belum Ada Data'),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: isLoading ? null : _processPenarikan,
+              onPressed: (isLoading || namaNasabah == null || saldoAkhir == null) ? null : _processPenarikan,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -219,6 +231,7 @@ class _PenarikanBodyState extends State<PenarikanBody> {
           _rekeningController.text = selectedNasabah.rekening;
           namaNasabah = selectedNasabah.nama;
           saldoAkhir = _currencyFormat.format(double.parse(selectedNasabah.saldo));
+          lastSelectedRekening = selectedNasabah.rekening;
         });
       },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
@@ -235,8 +248,17 @@ class _PenarikanBodyState extends State<PenarikanBody> {
               borderRadius: BorderRadius.circular(12),
             ),
           ),
+          onChanged: (value) {
+            if (value != lastSelectedRekening) {
+              setState(() {
+                namaNasabah = null;
+                saldoAkhir = null;
+              });
+            }
+          },
         );
       },
+
       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<Nasabah> onSelected, Iterable<Nasabah> options) {
         return Align(
           alignment: Alignment.topLeft,

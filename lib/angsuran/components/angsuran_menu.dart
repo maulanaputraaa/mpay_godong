@@ -1,9 +1,70 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mpay_godong/angsuran/angsuran/angsuran_feature_screen.dart';
 import 'package:mpay_godong/angsuran/tagihan/tagihan_screen.dart';
+import '../../models/mutasi_angsuran.dart';
 
-class AngsuranMenu extends StatelessWidget {
+class AngsuranMenu extends StatefulWidget {
   const AngsuranMenu({super.key});
+
+  @override
+  _AngsuranMenuState createState() => _AngsuranMenuState();
+}
+
+class _AngsuranMenuState extends State<AngsuranMenu> {
+  late Future<Map<String, dynamic>> _summaryFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAndUpdateSummary();
+  }
+
+  void _fetchAndUpdateSummary() {
+    setState(() {
+      _summaryFuture = fetchSummary();
+    });
+  }
+
+  Future<Map<String, dynamic>> fetchSummary() async {
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'auth_token');
+    const url = 'https://godong.niznet.my.id/api/angsuran?per_page=-1';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+    print('Isi respons: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body) as List<dynamic>;
+
+      int transaksiTotal = 0;
+      double total = 0.0;
+
+      for (var item in data) {
+        final angsuran = AngsuranRequest.fromJson(item as Map<String, dynamic>);
+        transaksiTotal += 1;
+        total += angsuran.kpokok + angsuran.kbunga + angsuran.administrasi + angsuran.denda;
+      }
+
+      return {
+        'transaksi': transaksiTotal,
+        'total': total,
+      };
+    } else {
+      print('Gagal memuat ringkasan. Kode status: ${response.statusCode}');
+      print('Isi respons: ${response.body}');
+      throw Exception('Failed to load summary');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +74,25 @@ class AngsuranMenu extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            _buildTransactionSummary(context),
+            FutureBuilder<Map<String, dynamic>>(
+              future: _summaryFuture,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else if (snapshot.hasData) {
+                  final data = snapshot.data!;
+                  return _buildTransactionSummary(
+                    context,
+                    transaksi: data['transaksi'] as int,
+                    total: data['total'] as double,
+                  );
+                } else {
+                  return const Text('No data available');
+                }
+              },
+            ),
             const SizedBox(height: 30),
             _buildMenuTitle(context),
             const SizedBox(height: 20),
@@ -24,7 +103,12 @@ class AngsuranMenu extends StatelessWidget {
     );
   }
 
-  Widget _buildTransactionSummary(BuildContext context) {
+  Widget _buildTransactionSummary(BuildContext context, {
+    required int transaksi,
+    required double total
+  }) {
+    final currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
+
     return Container(
       constraints: BoxConstraints(
         maxWidth: MediaQuery.of(context).size.width * 0.9,
@@ -46,12 +130,12 @@ class AngsuranMenu extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          _buildSummaryText(context, 'Transaksi : 0', FontWeight.bold),
+          _buildSummaryText(context, 'Transaksi : $transaksi', FontWeight.bold),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _buildSummaryText(context, 'Total : Rp.0'),
+                _buildSummaryText(context, 'Total : ${currencyFormat.format(total)}'),
               ],
             ),
           ),
@@ -144,12 +228,9 @@ class AngsuranMenu extends StatelessWidget {
         dynamic icon,
         required Color color,
         required Function() onPressed}) {
-    // Mendapatkan ukuran layar
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Mengatur ukuran padding dan icon berdasarkan lebar layar
-    final buttonPadding = screenWidth * 0.04; // Misalnya 4% dari lebar layar
-    final iconSize = screenWidth * 0.1; // Misalnya 10% dari lebar layar
+    final buttonPadding = screenWidth * 0.04;
+    final iconSize = screenWidth * 0.1;
 
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
