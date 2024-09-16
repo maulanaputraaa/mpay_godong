@@ -297,18 +297,43 @@ class _BodyFeatureState extends State<BodyFeature> {
         return Align(
           alignment: Alignment.topLeft,
           child: Material(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.grey.shade300),
+            ),
             elevation: 4.0,
-            child: ListView.builder(
-              padding: EdgeInsets.zero,
-              itemCount: options.length,
-              itemBuilder: (context, index) {
-                final option = options.elementAt(index);
-                return ListTile(
-                  leading: Icon(Icons.account_circle),
-                  title: Text(option.rekening),
-                  onTap: () => onSelected(option),
-                );
-              },
+            child: Container(
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 8),
+                itemCount: options.length,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  final Debitur option = options.elementAt(index);
+
+                  return GestureDetector(
+                    onTap: () {
+                      onSelected(option);
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.account_circle, color: Colors.green),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              '${option.rekening} - ${option.nasabah}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
           ),
         );

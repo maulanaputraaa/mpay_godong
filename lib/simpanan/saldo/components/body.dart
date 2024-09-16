@@ -68,10 +68,45 @@ class _SaldoBodyState extends State<SaldoBody> {
   String? alamatNasabah;
   String? rekeningNasabah;
   String? saldoNasabah;
+  String lastSelectedRekening = '';
 
   bool isLoading = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _rekeningController.addListener(_onRekeningChanged);
+  }
+
+  @override
+  void dispose() {
+    _rekeningController.removeListener(_onRekeningChanged);
+    _rekeningController.dispose();
+    super.dispose();
+  }
+
+  void _onRekeningChanged() {
+    if (_rekeningController.text != lastSelectedRekening) {
+      setState(() {
+        namaNasabah = null;
+        alamatNasabah = null;
+        rekeningNasabah = null;
+        saldoNasabah = null;
+      });
+    }
+  }
+
   Future<void> fetchNasabahData(String rekening) async {
+    if (rekening.isEmpty) {
+      setState(() {
+        namaNasabah = null;
+        alamatNasabah = null;
+        rekeningNasabah = null;
+        saldoNasabah = null;
+      });
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -87,6 +122,7 @@ class _SaldoBodyState extends State<SaldoBody> {
         alamatNasabah = selectedNasabah.alamat;
         rekeningNasabah = selectedNasabah.rekening;
         saldoNasabah = selectedNasabah.saldo;
+        lastSelectedRekening = selectedNasabah.rekening;
       });
     } else {
       setState(() {
@@ -94,6 +130,7 @@ class _SaldoBodyState extends State<SaldoBody> {
         alamatNasabah = 'Tidak Ditemukan';
         rekeningNasabah = 'Tidak Ditemukan';
         saldoNasabah = 'Tidak Ditemukan';
+        lastSelectedRekening = '';
       });
     }
 
@@ -132,11 +169,9 @@ class _SaldoBodyState extends State<SaldoBody> {
           _buildInfoBox('Saldo Akhir', saldoNasabah ?? 'Belum Ada Data', isSaldo: true),
           const SizedBox(height: 32),
           ElevatedButton(
-            onPressed: () {
-              if (_rekeningController.text.isNotEmpty) {
-                fetchNasabahData(_rekeningController.text);
-              }
-            },
+            onPressed: (_rekeningController.text.isNotEmpty && _rekeningController.text == lastSelectedRekening)
+                ? () => fetchNasabahData(_rekeningController.text)
+                : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               padding: const EdgeInsets.symmetric(vertical: 16),
@@ -159,7 +194,7 @@ class _SaldoBodyState extends State<SaldoBody> {
         if (textEditingValue.text.isEmpty) {
           return const Iterable<Nasabah>.empty();
         }
-        return fetchNasabahSuggestions(textEditingValue.text).then((suggestions) => suggestions);
+        return fetchNasabahSuggestions(textEditingValue.text);
       },
       displayStringForOption: (Nasabah option) => option.rekening,
       onSelected: (Nasabah selectedNasabah) {
@@ -169,20 +204,10 @@ class _SaldoBodyState extends State<SaldoBody> {
           alamatNasabah = selectedNasabah.alamat;
           rekeningNasabah = selectedNasabah.rekening;
           saldoNasabah = selectedNasabah.saldo;
+          lastSelectedRekening = selectedNasabah.rekening;
         });
       },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
-        fieldTextEditingController.addListener(() {
-          if (fieldTextEditingController.text.isEmpty) {
-            setState(() {
-              namaNasabah = null;
-              alamatNasabah = null;
-              rekeningNasabah = null;
-              saldoNasabah = null;
-            });
-          }
-        });
-
         return Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
@@ -204,6 +229,9 @@ class _SaldoBodyState extends State<SaldoBody> {
               fillColor: Colors.grey[100],
               contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             ),
+            onChanged: (value) {
+              _rekeningController.text = value;
+            },
           ),
         );
       },
@@ -211,50 +239,38 @@ class _SaldoBodyState extends State<SaldoBody> {
         return Align(
           alignment: Alignment.topLeft,
           child: Material(
-            elevation: 4,
-            borderRadius: BorderRadius.circular(8),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+              side: BorderSide(color: Colors.grey.shade300),
+            ),
+            elevation: 4.0,
             child: Container(
-              constraints: const BoxConstraints(maxHeight: 180),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.white,
-              ),
+              color: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 8),
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: options.length,
+                shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   final Nasabah option = options.elementAt(index);
+
                   return GestureDetector(
                     onTap: () {
                       onSelected(option);
                     },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey.withOpacity(0.3),
-                            spreadRadius: 1,
-                            blurRadius: 4,
-                            offset: const Offset(0, 2),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.account_circle, color: Colors.green),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Text(
+                              '${option.rekening} - ${option.nama}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
                           ),
                         ],
-                      ),
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.person,
-                          color: Colors.green,
-                        ),
-                        title: Text(
-                          option.rekening,
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        subtitle: Text(
-                          option.nama,
-                          style: const TextStyle(fontSize: 14),
-                        ),
                       ),
                     ),
                   );
@@ -266,7 +282,6 @@ class _SaldoBodyState extends State<SaldoBody> {
       },
     );
   }
-
 
   Widget _buildInfoBox(String title, String value, {bool isSaldo = false}) {
     String displayValue = isSaldo ? formatRupiah(value) : value;
