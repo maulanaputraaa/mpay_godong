@@ -1,11 +1,119 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:intl/intl.dart';
 import 'package:mpay_godong/laporan/fasilitas_anggota/fasilitas_anggota_screen.dart';
 import 'package:mpay_godong/laporan/laporan_angsuran/laporan_angsuran_screen.dart';
 import 'package:mpay_godong/laporan/laporan_simpanan/laporan_simpanan_screen.dart';
 import 'package:mpay_godong/laporan/rekap_laporan/rekap_laporan_screen.dart';
+import '../../models/mutasi_angsuran.dart';
+import '../../models/mutasi_nasabah.dart';
 
-class LaporanMenu extends StatelessWidget {
-  const LaporanMenu({super.key});
+class LaporanMenu extends StatefulWidget {
+  const LaporanMenu({Key? key}) : super(key: key);
+
+  @override
+  _LaporanMenuState createState() => _LaporanMenuState();
+}
+
+class _LaporanMenuState extends State<LaporanMenu> {
+  int mutasiTabCount = 0;
+  int angsuranCount = 0;
+  double totalUang = 0;
+  double totalAngsuran = 0;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    const storage = FlutterSecureStorage();
+    final token = await storage.read(key: 'auth_token');
+
+    if (token == null) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+    try {
+      // Fetch mutasi tabungan data
+      const mutasiUrl = 'https://godong.niznet.my.id/api/mutasi-tabungan?per_page=-1';
+      final mutasiResponse = await http.get(
+        Uri.parse(mutasiUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      // Cetak respon mutasi untuk debugging
+      print(mutasiResponse.body);
+
+      if (mutasiResponse.statusCode == 200) {
+        // Pastikan kita menangani response sebagai list
+        final List<dynamic> mutasiData = json.decode(mutasiResponse.body);
+
+        // Debugging: cetak data yang diterima
+        print('Mutasi Data: $mutasiData');
+
+        // Parsing ke dalam objek MutasiTabungan
+        final List<MutasiTabungan> mutasiList = mutasiData.map((json) {
+          print('Parsing JSON: $json'); // Tambahkan ini
+          return MutasiTabungan.fromJson(json);
+        }).toList();
+
+        setState(() {
+          mutasiTabCount = mutasiList.length;
+          totalUang = mutasiList.fold(0.0, (sum, item) => sum + (item.dk == 'K' ? item.jumlah : 0));
+        });
+      } else {
+        print('Failed to fetch mutasi tabungan data. Status code: ${mutasiResponse.statusCode}');
+      }
+
+      // Fetch angsuran data
+      const angsuranUrl = 'https://godong.niznet.my.id/api/angsuran?per_page=-1';
+      final angsuranResponse = await http.get(
+        Uri.parse(angsuranUrl),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+// Cetak respon angsuran untuk debugging
+      print(angsuranResponse.body);
+
+      if (angsuranResponse.statusCode == 200) {
+        final List<dynamic> angsuranData = json.decode(angsuranResponse.body);
+        final List<AngsuranRequest> angsuranList = angsuranData.map((json) {
+          return AngsuranRequest.fromJson(json); // Pastikan Anda memiliki konstruktor dariJson yang benar
+        }).toList();
+
+        setState(() {
+          angsuranCount = angsuranList.length;
+          totalAngsuran = angsuranList.fold(0.0, (sum, item) => sum + item.dpokok + item.dbunga + item.denda);
+        });
+      } else {
+        print('Failed to fetch angsuran data. Status code: ${angsuranResponse.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching data: $e'); // Ini akan menangkap error
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,24 +153,26 @@ class LaporanMenu extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
+      child: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              _buildSummaryText(context, 'Mutasi Tab : 0', FontWeight.bold),
+              _buildSummaryText(context, 'Mutasi Tab : $mutasiTabCount', FontWeight.bold),
               const SizedBox(height: 8),
-              _buildSummaryText(context, 'Angsuran : 0', FontWeight.bold),
+              _buildSummaryText(context, 'Angsuran : $angsuranCount', FontWeight.bold),
             ],
           ),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: <Widget>[
-                _buildSummaryText(context, 'Total Uang : Rp.0'),
+                _buildSummaryText(context, 'Total Uang : Rp.${NumberFormat('#,##0').format(totalUang)}'),
                 const SizedBox(height: 8),
-                _buildSummaryText(context, 'Total Angsuran : Rp.0'),
+                _buildSummaryText(context, 'Total Angsuran : Rp.${NumberFormat('#,##0').format(totalAngsuran)}'),
               ],
             ),
           ),
