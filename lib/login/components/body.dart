@@ -22,7 +22,7 @@ class _BodyState extends State<Body> {
             const SizedBox(height: 20),
             LoginFingerprint(),
             const SizedBox(height: 20),
-            const SignUpButton(),
+            // const SignUpButton(),
             const SizedBox(height: 20),
           ],
         ),

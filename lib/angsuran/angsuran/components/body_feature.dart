@@ -50,6 +50,7 @@ class _BodyFeatureState extends State<BodyFeature> {
   String? namaDebitur;
   String? bakiDebet;
   bool isLoading = false;
+  String? lastValidRekening;
 
   @override
   void initState() {
@@ -57,10 +58,12 @@ class _BodyFeatureState extends State<BodyFeature> {
     _pokokController.addListener(_formatCurrency);
     _jasaController.addListener(_formatCurrency);
     _dendaController.addListener(_formatCurrency);
+    _rekeningController.addListener(_onRekeningChanged);
   }
 
   @override
   void dispose() {
+    _rekeningController.removeListener(_onRekeningChanged);
     _rekeningController.dispose();
     _pokokController.removeListener(_formatCurrency);
     _pokokController.dispose();
@@ -69,6 +72,23 @@ class _BodyFeatureState extends State<BodyFeature> {
     _dendaController.removeListener(_formatCurrency);
     _dendaController.dispose();
     super.dispose();
+  }
+
+  void _onRekeningChanged() {
+    if (_rekeningController.text != lastValidRekening) {
+      _clearData();
+    }
+  }
+
+  void _clearData() {
+    setState(() {
+      _pokokController.clear();
+      _jasaController.clear();
+      _dendaController.clear();
+      namaDebitur = null;
+      bakiDebet = null;
+      lastValidRekening = null;
+    });
   }
 
   void _formatCurrency() {
@@ -91,9 +111,9 @@ class _BodyFeatureState extends State<BodyFeature> {
   }
 
   Future<void> _processAngsuran() async {
-    if (_rekeningController.text.isEmpty) {
+    if (_rekeningController.text.isEmpty || _rekeningController.text != lastValidRekening) {
       Fluttertoast.showToast(
-        msg: 'Rekening harus diisi',
+        msg: 'Pilih nomor rekening yang valid',
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         backgroundColor: Colors.red,
@@ -242,7 +262,7 @@ class _BodyFeatureState extends State<BodyFeature> {
             _buildInfoBox('Baki Debet', bakiDebet ?? 'Belum Ada Data'),
             const SizedBox(height: 32),
             ElevatedButton(
-              onPressed: isLoading ? null : _processAngsuran,
+              onPressed: (isLoading || namaDebitur == null || bakiDebet == null) ? null : _processAngsuran,
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green,
                 padding: const EdgeInsets.symmetric(vertical: 16),
@@ -272,6 +292,7 @@ class _BodyFeatureState extends State<BodyFeature> {
       onSelected: (Debitur selectedDebitur) {
         setState(() {
           _rekeningController.text = selectedDebitur.rekening;
+          lastValidRekening = selectedDebitur.rekening;
           namaDebitur = selectedDebitur.nasabah.nama;
           bakiDebet = _currencyFormat.format(selectedDebitur.pokok);
           _pokokController.text = _currencyFormat.format(selectedDebitur.pokok);
@@ -284,6 +305,9 @@ class _BodyFeatureState extends State<BodyFeature> {
           controller: controller,
           focusNode: focusNode,
           onEditingComplete: onEditingComplete,
+          onChanged: (value) {
+            _rekeningController.text = value;
+          },
           decoration: InputDecoration(
             hintText: 'Masukkan nomor rekening',
             prefixIcon: const Icon(Icons.search),

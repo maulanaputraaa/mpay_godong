@@ -5,7 +5,6 @@ import 'package:mpay_godong/layouts/app.dart';
 import 'package:mpay_godong/layouts/app_sign_up.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../auth/auth_provider.dart';
 
 class LoginForm extends StatefulWidget {
@@ -173,32 +172,32 @@ class _LoginFormState extends State<LoginForm> {
   }
 }
 
-class SignUpButton extends StatelessWidget {
-  const SignUpButton({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: RichText(
-        text: TextSpan(
-          text: 'Tidak Punya Akun? ',
-          style: const TextStyle(fontSize: 16, color: Colors.black),
-          children: <TextSpan>[
-            TextSpan(
-              text: 'Sign Up',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.blue,
-                fontWeight: FontWeight.bold,
-              ),
-              recognizer: TapGestureRecognizer()
-                ..onTap = () {
-                  Navigator.pushNamed(context, AppScreenSignUp.routeName);
-                },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
+// class SignUpButton extends StatelessWidget {
+//   const SignUpButton({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Center(
+//       child: RichText(
+//         text: TextSpan(
+//           text: 'Tidak Punya Akun? ',
+//           style: const TextStyle(fontSize: 16, color: Colors.black),
+//           children: <TextSpan>[
+//             TextSpan(
+//               text: 'Sign Up',
+//               style: const TextStyle(
+//                 fontSize: 16,
+//                 color: Colors.blue,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//               recognizer: TapGestureRecognizer()
+//                 ..onTap = () {
+//                   Navigator.pushNamed(context, AppScreenSignUp.routeName);
+//                 },
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }

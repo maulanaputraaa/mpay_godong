@@ -23,6 +23,12 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
     _fetchAndUpdateSummary();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchAndUpdateSummary();
+  }
+
   void _fetchAndUpdateSummary() {
     setState(() {
       _summaryFuture = fetchSummary();
@@ -103,10 +109,8 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
     );
   }
 
-  Widget _buildTransactionSummary(BuildContext context, {
-    required int transaksi,
-    required double total
-  }) {
+  Widget _buildTransactionSummary(BuildContext context,
+      {required int transaksi, required double total}) {
     final currencyFormat = NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ');
 
     return Container(
@@ -184,7 +188,9 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, AngsuranFeatureScreen.routeName),
+              Navigator.pushNamed(context, AngsuranFeatureScreen.routeName).then((_) {
+                _fetchAndUpdateSummary(); // Fetch summary again after navigating back
+              }),
         ),
         _buildMenuButton(
           context,
@@ -195,7 +201,9 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, TagihanScreen.routeName),
+              Navigator.pushNamed(context, TagihanScreen.routeName).then((_) {
+                _fetchAndUpdateSummary(); // Fetch summary again after navigating back
+              }),
         ),
         _buildMenuButton(
           context,
@@ -206,7 +214,9 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, '/reprint'),
+              Navigator.pushNamed(context, '/reprint').then((_) {
+                _fetchAndUpdateSummary(); // Fetch summary again after navigating back
+              }),
         ),
         _buildMenuButton(
           context,
@@ -217,7 +227,9 @@ class _AngsuranMenuState extends State<AngsuranMenu> {
           ),
           color: Colors.white,
           onPressed: () =>
-              Navigator.pushNamed(context, '/pengajuan'),
+              Navigator.pushNamed(context, '/pengajuan').then((_) {
+                _fetchAndUpdateSummary(); // Fetch summary again after navigating back
+              }),
         ),
       ],
     );
