@@ -35,6 +35,7 @@ class _LaporanMenuState extends State<RekapLaporanMenu> {
   List<MutasiTabungan> mutasiList = [];
   List<AngsuranRequest> angsuranList = [];
   List<Transaksi> transaksiList = []; // Daftar transaksi gabungan
+  List<Transaksi> filteredTransaksiList = []; // Daftar transaksi yang difilter
 
   @override
   void initState() {
@@ -137,8 +138,22 @@ class _LaporanMenuState extends State<RekapLaporanMenu> {
     } finally {
       setState(() {
         isLoading = false;
+        filteredTransaksiList = transaksiList; // Set daftar transaksi yang difilter dengan semua transaksi saat inisialisasi
       });
     }
+  }
+
+  void filterTransactions() {
+    setState(() {
+      if (_selectedStartDate != null && _selectedEndDate != null) {
+        filteredTransaksiList = transaksiList.where((transaksi) {
+          return transaksi.tgl.isAfter(_selectedStartDate!.subtract(const Duration(days: 1))) &&
+              transaksi.tgl.isBefore(_selectedEndDate!.add(const Duration(days: 1)));
+        }).toList();
+      } else {
+        filteredTransaksiList = transaksiList; // Jika tidak ada tanggal, tampilkan semua transaksi
+      }
+    });
   }
 
   String formatRupiah(double amount) {
@@ -197,14 +212,14 @@ class _LaporanMenuState extends State<RekapLaporanMenu> {
           // Tombol Preview
           ElevatedButton(
             onPressed: () {
-              // Logika untuk menampilkan laporan atau melakukan preview
+              filterTransactions(); // Memanggil fungsi filter saat tombol ditekan
               print("Preview laporan dengan tanggal mulai: $_selectedStartDate dan sampai tanggal: $_selectedEndDate");
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.green,
               padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
             ),
-            child: const Text("PREVIEW", style: TextStyle(fontSize: 18,color: Colors.white)),
+            child: const Text("PREVIEW", style: TextStyle(fontSize: 18, color: Colors.white)),
           ),
 
           // Daftar Transaksi Gabungan
@@ -215,10 +230,12 @@ class _LaporanMenuState extends State<RekapLaporanMenu> {
           ),
           const SizedBox(height: 10),
           Expanded(
-            child: ListView.builder(
-              itemCount: transaksiList.length,
+            child: isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+              itemCount: filteredTransaksiList.length,
               itemBuilder: (context, index) {
-                final transaksi = transaksiList[index];
+                final transaksi = filteredTransaksiList[index];
                 return ListTile(
                   title: Text('Tanggal: ${transaksi.tgl.toLocal().toString().split(' ')[0]}'),
                   subtitle: Text('Jumlah: ${formatRupiah(transaksi.jumlah)} - Jenis: ${transaksi.jenis}'),

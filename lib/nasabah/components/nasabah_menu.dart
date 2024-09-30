@@ -125,14 +125,7 @@ class NasabahMenu extends StatelessWidget {
                 name: nasabah.namaNasabah,
                 rekening: nasabah.rekening,
                 kode: nasabah.kode,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DetailNasabahPage(nasabah: nasabah),
-                    ),
-                  );
-                },
+                onTap: () {},
               );
             }).toList(),
           );
@@ -140,39 +133,6 @@ class NasabahMenu extends StatelessWidget {
           return const Center(child: Text('No nasabah available'));
         }
       },
-    );
-  }
-}
-
-// Contoh halaman detail nasabah
-class DetailNasabahPage extends StatelessWidget {
-  final Nasabah nasabah;
-
-  const DetailNasabahPage({super.key, required this.nasabah});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Detail Nasabah'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              nasabah.namaNasabah,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text('Rekening: ${nasabah.rekening}'),
-            Text('Kode: ${nasabah.kode}'),
-            Text('Saldo Akhir: ${nasabah.saldoAkhir}'),
-            // Tambahkan informasi lain sesuai kebutuhan
-          ],
-        ),
-      ),
     );
   }
 }

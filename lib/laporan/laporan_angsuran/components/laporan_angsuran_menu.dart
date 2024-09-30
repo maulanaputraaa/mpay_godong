@@ -16,7 +16,8 @@ class _LaporanMenuState extends State<LaporanMenu> {
   DateTime? _selectedStartDate;
   DateTime? _selectedEndDate;
   late Future<Map<String, dynamic>> _reportFuture;
-  Future<List<AngsuranRequest>> _transactionsFuture = Future.value([]);
+  List<AngsuranRequest> _allTransactions = [];
+  List<AngsuranRequest> _filteredTransactions = [];
 
   @override
   void initState() {
@@ -73,20 +74,14 @@ class _LaporanMenuState extends State<LaporanMenu> {
     }
   }
 
-  Future<List<AngsuranRequest>> _fetchTransactions() async {
+  Future<void> _fetchTransactions() async {
     const storage = FlutterSecureStorage();
     final token = await storage.read(key: 'auth_token'); // Mengambil token
 
     const url = 'https://godong.niznet.my.id/api/angsuran';
 
-    // Menambahkan parameter tanggal jika dipilih
-    String requestUrl = url;
-    if (_selectedStartDate != null && _selectedEndDate != null) {
-      requestUrl += '?start_date=${DateFormat('yyyy-MM-dd').format(_selectedStartDate!)}&end_date=${DateFormat('yyyy-MM-dd').format(_selectedEndDate!)}';
-    }
-
     final response = await http.get(
-      Uri.parse(requestUrl),
+      Uri.parse(url),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -96,11 +91,27 @@ class _LaporanMenuState extends State<LaporanMenu> {
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body) as Map<String, dynamic>;
       final data = jsonResponse['data'] as List<dynamic>;
-      return data.map((item) => AngsuranRequest.fromJson(item as Map<String, dynamic>)).toList();
+      _allTransactions = data.map((item) => AngsuranRequest.fromJson(item as Map<String, dynamic>)).toList();
+      _filterTransactions();
     } else {
       print('Gagal memuat data transaksi. Kode status: ${response.statusCode}');
       print('Isi respons: ${response.body}');
       throw Exception('Failed to load transactions');
+    }
+  }
+
+  void _filterTransactions() {
+    if (_selectedStartDate != null && _selectedEndDate != null) {
+      setState(() {
+        _filteredTransactions = _allTransactions.where((transaction) {
+          return transaction.tgl.isAfter(_selectedStartDate!.subtract(const Duration(days: 1))) &&
+              transaction.tgl.isBefore(_selectedEndDate!.add(const Duration(days: 1)));
+        }).toList();
+      });
+    } else {
+      setState(() {
+        _filteredTransactions = _allTransactions;
+      });
     }
   }
 
@@ -196,11 +207,10 @@ class _LaporanMenuState extends State<LaporanMenu> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () {
+            onPressed: () async {
               if (_selectedStartDate != null && _selectedEndDate != null) {
-                setState(() {
-                  _transactionsFuture = _fetchTransactions();
-                });
+                await _fetchTransactions();
+                _filterTransactions();
               } else {
                 // Tampilkan pesan error jika tanggal tidak dipilih
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -216,31 +226,16 @@ class _LaporanMenuState extends State<LaporanMenu> {
           ),
           const SizedBox(height: 20),
           Expanded(
-            child: FutureBuilder<List<AngsuranRequest>>(
-              future: _transactionsFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else if (snapshot.hasData) {
-                  final transactions = snapshot.data!;
-                  if (transactions.isEmpty) {
-                    return const Text('Tidak ada transaksi untuk tanggal yang dipilih');
-                  }
-                  return ListView.builder(
-                    itemCount: transactions.length,
-                    itemBuilder: (context, index) {
-                      final transaction = transactions[index];
-                      return ListTile(
-                        title: Text('Tanggal: ${DateFormat('yyyy-MM-dd').format(transaction.tgl)}'),
-                        subtitle: Text('Pokok: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ').format(transaction.dpokok)}'),
-                      );
-                    },
-                  );
-                } else {
-                  return const Text('No transactions available');
-                }
+            child: _filteredTransactions.isEmpty
+                ? const Center(child: Text('Tidak ada transaksi untuk tanggal yang dipilih'))
+                : ListView.builder(
+              itemCount: _filteredTransactions.length,
+              itemBuilder: (context, index) {
+                final transaction = _filteredTransactions[index];
+                return ListTile(
+                  title: Text('Tanggal: ${DateFormat('yyyy-MM-dd').format(transaction.tgl)}'),
+                  subtitle: Text('Pokok: ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ').format(transaction.dpokok)}'),
+                );
               },
             ),
           ),
