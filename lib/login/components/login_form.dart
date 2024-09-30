@@ -54,23 +54,25 @@ class _LoginFormState extends State<LoginForm> {
 
       final success = await context.read<AuthProvider>().login(email, password);
 
-      if (success) {
-        await _saveUserCredentials(email, password);
-
-        Navigator.pushReplacementNamed(context, AppScreen.routeName);
-      } else {
-        Fluttertoast.showToast(
-          msg: 'Email atau Password Salah',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+      if (mounted) { // Periksa apakah widget masih terpasang
+        if (success) {
+          await _saveUserCredentials(email, password);
+          Navigator.pushReplacementNamed(context, AppScreen.routeName);
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Email atau Password Salah',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0,
+          );
+        }
       }
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
